@@ -3,8 +3,9 @@ live-boot
 live-config
 systemd-sysv
 sudo
+pkexec
+x11-xserver-utils
 network-manager
-network-manager-config-connectivity-debian
 kde-plasma-desktop
 plasma-workspace
 kwin-x11
