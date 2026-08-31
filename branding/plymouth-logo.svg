@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300">
+ <g transform="translate(315 0) scale(.52)"><image href="logo.svg" width="512" height="512"/></g>
+ <text x="450" y="235" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="58" font-weight="700" fill="#FFFFFF">Tech<tspan fill="#42A5F5">Refreshing</tspan> Linux</text>
+ <circle cx="405" cy="278" r="8" fill="#42A5F5"/><circle cx="435" cy="278" r="8" fill="#1565C0"/><circle cx="465" cy="278" r="8" fill="#0D47A1"/><circle cx="495" cy="278" r="8" fill="#00BCD4"/>
+</svg>
