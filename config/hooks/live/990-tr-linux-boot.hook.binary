@@ -1,0 +1,38 @@
+#!/bin/sh
+set -eu
+
+# BIOS / ISOLINUX branding.
+if [ -d binary/isolinux ]; then
+    cp branding/generated/isolinux-splash.png binary/isolinux/splash.png
+    rm -f binary/isolinux/splash.svg
+    for f in binary/isolinux/*.cfg; do
+        [ -f "$f" ] || continue
+        sed -i \
+          -e 's/Debian GNU\/Linux/TechRefreshing Linux/g' \
+          -e 's/Live system (amd64 fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
+          -e 's/Live system (amd64)/Try or Install TechRefreshing Linux/g' \
+          -e 's/Live system (fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
+          -e 's/Live system/Try or Install TechRefreshing Linux/g' \
+          "$f"
+    done
+fi
+
+# UEFI / GRUB branding.
+if [ -d binary/boot/grub ]; then
+    cp branding/generated/grub-background.png binary/boot/grub/splash.png
+    for f in binary/boot/grub/*.cfg; do
+        [ -f "$f" ] || continue
+        sed -i \
+          -e 's/Debian GNU\/Linux/TechRefreshing Linux/g' \
+          -e 's/Live system (amd64 fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
+          -e 's/Live system (amd64)/Try or Install TechRefreshing Linux/g' \
+          -e 's/Live system (fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
+          -e 's/Live system/Try or Install TechRefreshing Linux/g' \
+          -e 's#splash\.svg#splash.png#g' \
+          "$f"
+    done
+fi
+
+install -d binary/.disk
+printf '%s\n' 'TechRefreshing Linux 1.0 (TR Linux) amd64' > binary/.disk/info
+: > binary/.disk/base_installable
