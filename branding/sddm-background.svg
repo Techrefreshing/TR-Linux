@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1440">
+ <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#020916"/><stop offset=".55" stop-color="#0B2B55"/><stop offset="1" stop-color="#0B4675"/></linearGradient><linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0C3D66"/><stop offset="1" stop-color="#020A16"/></linearGradient></defs>
+ <rect width="2560" height="850" fill="url(#sky)"/><rect y="850" width="2560" height="590" fill="url(#lake)"/>
+ <g fill="#DCEBFF" opacity=".72"><circle cx="190" cy="130" r="2"/><circle cx="490" cy="215" r="3"/><circle cx="820" cy="100" r="2"/><circle cx="1190" cy="165" r="2"/><circle cx="1500" cy="80" r="3"/><circle cx="1960" cy="160" r="2"/><circle cx="2250" cy="95" r="3"/></g>
+ <path d="M0 880L350 520 670 835 930 470 1290 850 1620 570 1880 820 2190 490 2560 850V980H0z" fill="#071523"/>
+ <path d="M0 930L420 675 710 900 1100 650 1470 905 1830 690 2180 900 2560 700V1020H0z" fill="#0A2236"/>
+ <path d="M0 920C420 980 680 950 980 930s650 55 980 15 430-18 600 5v490H0z" fill="#061523" opacity=".65"/>
+ <g transform="translate(1130 80) scale(.58)"><image href="logo.svg" width="512" height="512"/></g>
+ <text x="1280" y="430" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="72" font-weight="700" fill="#fff">Tech<tspan fill="#42A5F5">Refreshing</tspan> Linux</text>
+ <text x="1280" y="500" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="32" fill="#42A5F5">Familiar. Beautiful. Stable.</text>
+</svg>
