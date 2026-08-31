@@ -1,38 +1,121 @@
 #!/bin/sh
 set -eu
 
-install -d /etc/skel/Desktop
-cat > /etc/skel/Desktop/install-tr-linux.desktop <<'EOF'
+# Remove Debian's live-installer launchers. We keep Debian's tested Calamares
+# module configuration underneath, but expose only the TR Linux entry point.
+rm -f /usr/share/applications/install-debian.desktop
+rm -f /etc/xdg/autostart/calamares-desktop-icon.desktop
+rm -f /usr/share/pixmaps/install-debian.png
+
+# Use Debian's proven live-media elevation pattern, branded for TR Linux.
+cat > /usr/local/bin/calamares-install-tr-linux <<'WRAPPER'
+#!/bin/sh
+set -u
+moved_fstab=0
+cleanup() {
+    xhost -si:localuser:root >/dev/null 2>&1 || true
+    if [ "$moved_fstab" -eq 1 ] && [ -e /etc/fstab.orig.calamares ]; then
+        sudo mv /etc/fstab.orig.calamares /etc/fstab || true
+    fi
+}
+trap cleanup EXIT INT TERM
+
+if [ -e /etc/fstab ] && [ ! -e /etc/fstab.orig.calamares ]; then
+    sudo mv /etc/fstab /etc/fstab.orig.calamares
+    moved_fstab=1
+fi
+
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+xhost +si:localuser:root >/dev/null 2>&1 || true
+pkexec calamares
+exit $?
+WRAPPER
+chmod 0755 /usr/local/bin/calamares-install-tr-linux
+
+cat > /usr/share/applications/install-tr-linux.desktop <<'DESKTOP'
 [Desktop Entry]
 Type=Application
-Name=Install TR Linux
-Comment=Install TR Linux on this computer
-Exec=calamares
-Icon=calamares
+Name=Install TechRefreshing Linux
+GenericName=System Installer
+Comment=Install TechRefreshing Linux on this computer
+Exec=/usr/local/bin/calamares-install-tr-linux
+Icon=tr-linux-installer
 Terminal=false
 Categories=System;
-EOF
-chmod 0755 /etc/skel/Desktop/install-tr-linux.desktop
+Keywords=installer;calamares;system;
+DESKTOP
+
+install -d /usr/share/icons/hicolor/512x512/apps
+cp /usr/share/tr-linux/branding/install-tr-linux.png /usr/share/icons/hicolor/512x512/apps/tr-linux-installer.png
+
+# Live-only desktop shortcut. Installed user accounts do not inherit it.
+cat > /usr/local/bin/tr-linux-live-setup <<'LIVESETUP'
+#!/bin/sh
+set -eu
+case "${HOME:-}" in
+    /home/*) ;;
+    *) exit 0 ;;
+esac
+
+if [ -d /run/live/medium ] || [ -d /lib/live/mount/medium ] || grep -qw boot=live /proc/cmdline 2>/dev/null; then
+    mkdir -p "$HOME/Desktop"
+    cp /usr/share/applications/install-tr-linux.desktop "$HOME/Desktop/install-tr-linux.desktop"
+    chmod 0755 "$HOME/Desktop/install-tr-linux.desktop"
+fi
+
+marker="$HOME/.config/tr-linux-initialized"
+if [ ! -e "$marker" ]; then
+    mkdir -p "$HOME/.config"
+    if command -v plasma-apply-wallpaperimage >/dev/null 2>&1; then
+        plasma-apply-wallpaperimage /usr/share/tr-linux/branding/wallpaper-3840x2160.png >/dev/null 2>&1 || true
+    fi
+    touch "$marker"
+fi
+LIVESETUP
+chmod 0755 /usr/local/bin/tr-linux-live-setup
+
+install -d /etc/xdg/autostart
+cat > /etc/xdg/autostart/tr-linux-first-login.desktop <<'AUTOSTART'
+[Desktop Entry]
+Type=Application
+Name=TR Linux Initial Setup
+Exec=/usr/local/bin/tr-linux-live-setup
+OnlyShowIn=KDE;
+X-KDE-autostart-after=panel
+NoDisplay=true
+AUTOSTART
+
+# Custom SDDM theme: retain the stable Breeze QML implementation, but replace
+# its visual identity with TechRefreshing branding.
+if [ -d /usr/share/sddm/themes/breeze ]; then
+    rm -rf /usr/share/sddm/themes/tr-linux
+    cp -a /usr/share/sddm/themes/breeze /usr/share/sddm/themes/tr-linux
+    cat > /usr/share/sddm/themes/tr-linux/theme.conf.user <<'THEME'
+[General]
+background=/usr/share/tr-linux/branding/sddm-background.png
+type=image
+THEME
+fi
 
 install -d /etc/sddm.conf.d
-cat > /etc/sddm.conf.d/10-tr-linux.conf <<'EOF'
+cat > /etc/sddm.conf.d/10-tr-linux.conf <<'SDDM'
 [Autologin]
 User=live
 Session=plasma
 Relogin=true
 
 [Theme]
-Current=breeze
-EOF
+Current=tr-linux
+SDDM
 
 install -d /etc/NetworkManager/conf.d
-cat > /etc/NetworkManager/conf.d/10-tr-linux.conf <<'EOF'
+cat > /etc/NetworkManager/conf.d/10-tr-linux.conf <<'NM'
 [main]
 plugins=ifupdown,keyfile
 
 [ifupdown]
 managed=true
-EOF
+NM
 
 systemctl enable NetworkManager.service || true
 systemctl enable sddm.service || true
