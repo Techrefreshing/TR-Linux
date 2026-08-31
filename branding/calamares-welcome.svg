@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320">
+ <rect width="800" height="320" rx="24" fill="#0E1B2B"/>
+ <g transform="translate(75 45) scale(.42)"><image href="logo.svg" width="512" height="512"/></g>
+ <text x="340" y="125" font-family="DejaVu Sans, sans-serif" font-size="48" font-weight="700" fill="#fff">Tech<tspan fill="#42A5F5">Refreshing</tspan> Linux</text>
+ <text x="342" y="180" font-family="DejaVu Sans, sans-serif" font-size="28" fill="#F5F7FA">Install TR Linux 1.0</text>
+ <text x="342" y="225" font-family="DejaVu Sans, sans-serif" font-size="22" fill="#42A5F5">Familiar. Beautiful. Stable.</text>
+</svg>
