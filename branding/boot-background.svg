@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+ <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#020712"/><stop offset=".55" stop-color="#07162D"/><stop offset="1" stop-color="#0D2850"/></linearGradient><linearGradient id="w" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#0D47A1"/><stop offset="1" stop-color="#00BCD4"/></linearGradient></defs>
+ <rect width="1920" height="1080" fill="url(#bg)"/>
+ <g fill="none" stroke="url(#w)" opacity=".35"><path d="M-100 740C350 490 540 910 930 700s600-260 1090 10" stroke-width="10"/><path d="M-120 805C360 560 580 980 1010 760s620-220 1040 25" stroke-width="3"/></g>
+ <g transform="translate(800 100) scale(.62)"><image href="logo.svg" width="512" height="512"/></g>
+ <text x="960" y="500" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="92" font-weight="700" fill="#fff">Tech<tspan fill="#42A5F5">Refreshing</tspan></text>
+ <text x="960" y="585" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="48" letter-spacing="18" fill="#F5F7FA">LINUX</text>
+ <text x="960" y="900" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="34" fill="#42A5F5">Familiar. Beautiful. Stable.</text>
+</svg>
