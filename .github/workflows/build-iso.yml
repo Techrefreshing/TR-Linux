@@ -38,12 +38,79 @@ jobs:
               bash ./build.sh
             '
 
-      - name: Validate build outputs
+      - name: Validate checksum
         run: |
+          set -euxo pipefail
           test -s tr-linux-1.0-dev002-amd64.iso
           test -s tr-linux-1.0-dev002-amd64.iso.sha256
           sha256sum -c tr-linux-1.0-dev002-amd64.iso.sha256
           ls -lh tr-linux-1.0-dev002-amd64.iso*
+
+      - name: Validate TR Linux identity, branding and installer inside ISO
+        run: |
+          docker run --rm --privileged \
+            -v "$PWD:/work" \
+            -w /work \
+            -e DEBIAN_FRONTEND=noninteractive \
+            debian:13 bash -lc '
+              set -euxo pipefail
+              apt-get update
+              apt-get install -y --no-install-recommends xorriso squashfs-tools grep coreutils
+
+              rm -rf /tmp/triso /tmp/trroot
+              mkdir -p /tmp/triso
+              xorriso -osirrox on \
+                -indev tr-linux-1.0-dev002-amd64.iso \
+                -extract / /tmp/triso >/tmp/xorriso-extract.log 2>&1
+
+              test -s /tmp/triso/live/filesystem.squashfs
+              unsquashfs -d /tmp/trroot /tmp/triso/live/filesystem.squashfs >/tmp/unsquashfs.log 2>&1
+
+              # OS identity must be TR Linux, not stock Debian.
+              grep -Fxq "PRETTY_NAME=\"TechRefreshing Linux 1.0\"" /tmp/trroot/usr/lib/os-release
+              grep -Fxq "NAME=\"TechRefreshing Linux\"" /tmp/trroot/usr/lib/os-release
+              grep -Fxq "ID=trlinux" /tmp/trroot/usr/lib/os-release
+              grep -Fxq "tr-linux" /tmp/trroot/etc/hostname
+
+              # Required TR Linux branding must be baked into the live filesystem.
+              test -s /tmp/trroot/usr/share/tr-linux/branding/tr-monogram.png
+              test -s /tmp/trroot/usr/share/tr-linux/branding/wallpaper-3840x2160.png
+              test -s /tmp/trroot/usr/share/tr-linux/branding/sddm-background.png
+              test -s /tmp/trroot/usr/share/tr-linux/branding/plymouth-logo.png
+
+              # Only the TR Linux installer entry point should be exposed.
+              test -x /tmp/trroot/usr/local/bin/calamares-install-tr-linux
+              test -f /tmp/trroot/usr/share/applications/install-tr-linux.desktop
+              grep -Fq "Name=Install TechRefreshing Linux" /tmp/trroot/usr/share/applications/install-tr-linux.desktop
+              grep -Fq "pkexec calamares" /tmp/trroot/usr/local/bin/calamares-install-tr-linux
+              test ! -e /tmp/trroot/usr/share/applications/install-debian.desktop
+
+              # Calamares must use our branding profile.
+              test -s /tmp/trroot/etc/calamares/branding/trlinux/branding.desc
+              grep -Fq "productName: TechRefreshing Linux" /tmp/trroot/etc/calamares/branding/trlinux/branding.desc
+              grep -Eq "^branding:[[:space:]]*trlinux" /tmp/trroot/etc/calamares/settings.conf
+              grep -Fq "requiredStorage: 20.0" /tmp/trroot/etc/calamares/modules/welcome.conf
+
+              # BIOS/UEFI boot menus must carry TR Linux wording.
+              grep -Rqs "TechRefreshing Linux" /tmp/triso/isolinux /tmp/triso/boot/grub
+              if grep -Rqs "Debian GNU/Linux 1.0" /tmp/triso/isolinux /tmp/triso/boot/grub; then
+                echo "Stock Debian boot identity is still present" >&2
+                exit 1
+              fi
+
+              printf "%s\n" \
+                "TR Linux dev002 validation PASSED" \
+                "- TechRefreshing OS identity present" \
+                "- Branding assets present" \
+                "- Calamares branded as TechRefreshing Linux" \
+                "- Elevated installer wrapper present" \
+                "- Stock Debian desktop installer entry absent" \
+                "- Boot menu contains TechRefreshing Linux" \
+                > /work/validation-report.txt
+            '
+
+      - name: Show validation report
+        run: cat validation-report.txt
 
       - name: Show build outputs
         if: always()
@@ -51,7 +118,7 @@ jobs:
           ls -lah
           if [ -f build.log ]; then tail -n 250 build.log; fi
 
-      - name: Upload ISO and checksum
+      - name: Upload ISO, checksum and validation report
         if: success()
         uses: actions/upload-artifact@v4
         with:
@@ -59,15 +126,18 @@ jobs:
           path: |
             tr-linux-1.0-dev002-amd64.iso
             tr-linux-1.0-dev002-amd64.iso.sha256
+            validation-report.txt
             build.log
           if-no-files-found: error
           retention-days: 14
 
-      - name: Upload failure log
+      - name: Upload failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: tr-linux-build-log-dev002
-          path: build.log
+          path: |
+            build.log
+            validation-report.txt
           if-no-files-found: ignore
           retention-days: 7
