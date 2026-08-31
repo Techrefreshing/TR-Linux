@@ -6,6 +6,7 @@ on:
     branches: [ main ]
     paths:
       - 'build.sh'
+      - 'branding/**'
       - 'config/**'
       - '.github/workflows/build-iso.yml'
 
@@ -15,7 +16,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 150
 
     steps:
       - name: Checkout source
@@ -33,24 +34,31 @@ jobs:
               apt-get install -y --no-install-recommends \
                 live-build debootstrap squashfs-tools xorriso isolinux \
                 syslinux-common grub-pc-bin grub-efi-amd64-bin mtools \
-                dosfstools ca-certificates curl wget gnupg
+                dosfstools ca-certificates curl wget gnupg librsvg2-bin
               bash ./build.sh
             '
+
+      - name: Validate build outputs
+        run: |
+          test -s tr-linux-1.0-dev002-amd64.iso
+          test -s tr-linux-1.0-dev002-amd64.iso.sha256
+          sha256sum -c tr-linux-1.0-dev002-amd64.iso.sha256
+          ls -lh tr-linux-1.0-dev002-amd64.iso*
 
       - name: Show build outputs
         if: always()
         run: |
           ls -lah
-          if [ -f build.log ]; then tail -n 200 build.log; fi
+          if [ -f build.log ]; then tail -n 250 build.log; fi
 
       - name: Upload ISO and checksum
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: tr-linux-1.0-dev001-amd64
+          name: tr-linux-1.0-dev002-amd64
           path: |
-            tr-linux-1.0-dev001-amd64.iso
-            tr-linux-1.0-dev001-amd64.iso.sha256
+            tr-linux-1.0-dev002-amd64.iso
+            tr-linux-1.0-dev002-amd64.iso.sha256
             build.log
           if-no-files-found: error
           retention-days: 14
@@ -59,7 +67,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: tr-linux-build-log
+          name: tr-linux-build-log-dev002
           path: build.log
           if-no-files-found: ignore
           retention-days: 7
