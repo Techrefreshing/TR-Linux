@@ -19,6 +19,8 @@ if [[ "${EUID}" -ne 0 ]]; then
   exit 1
 fi
 
+find config/hooks -type f -name '*.hook.chroot' -exec chmod 0755 {} + 2>/dev/null || true
+
 lb clean --purge || true
 
 lb config noauto \
