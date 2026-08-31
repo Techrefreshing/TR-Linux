@@ -38,9 +38,8 @@ cryptsetup
 parted
 gparted
 os-prober
-grub-efi-amd64
-grub-pc
-shim-signed
+grub-pc-bin
+grub-efi-amd64-bin
 plymouth
 plymouth-themes
 firmware-linux
