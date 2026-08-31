@@ -1,0 +1,65 @@
+name: Build TR Linux ISO
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'build.sh'
+      - 'config/**'
+      - '.github/workflows/build-iso.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Build inside Debian 13
+        run: |
+          docker run --rm --privileged \
+            -v "$PWD:/work" \
+            -w /work \
+            -e DEBIAN_FRONTEND=noninteractive \
+            debian:13 bash -lc '
+              set -euxo pipefail
+              apt-get update
+              apt-get install -y --no-install-recommends \
+                live-build debootstrap squashfs-tools xorriso isolinux \
+                syslinux-common grub-pc-bin grub-efi-amd64-bin mtools \
+                dosfstools ca-certificates curl wget gnupg
+              bash ./build.sh
+            '
+
+      - name: Show build outputs
+        if: always()
+        run: |
+          ls -lah
+          if [ -f build.log ]; then tail -n 200 build.log; fi
+
+      - name: Upload ISO and checksum
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tr-linux-1.0-dev001-amd64
+          path: |
+            tr-linux-1.0-dev001-amd64.iso
+            tr-linux-1.0-dev001-amd64.iso.sha256
+            build.log
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload failure log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tr-linux-build-log
+          path: build.log
+          if-no-files-found: ignore
+          retention-days: 7
