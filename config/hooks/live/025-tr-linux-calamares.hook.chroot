@@ -1,0 +1,87 @@
+#!/bin/sh
+set -eu
+
+BRAND=/etc/calamares/branding/trlinux
+install -d "$BRAND" /etc/calamares/modules
+cp /usr/share/tr-linux/branding/tr-monogram.png "$BRAND/tr-monogram.png"
+cp /usr/share/tr-linux/branding/calamares-welcome.png "$BRAND/welcome.png"
+cp /usr/share/tr-linux/branding/calamares-slide1.png "$BRAND/slide1.png"
+
+cat > "$BRAND/branding.desc" <<'BRANDING'
+---
+componentName: trlinux
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 900px,620px
+windowPlacement: center
+
+strings:
+    productName: TechRefreshing Linux
+    shortProductName: TR Linux
+    version: 1.0
+    shortVersion: 1.0
+    versionedName: TechRefreshing Linux 1.0
+    shortVersionedName: TR Linux 1.0
+    bootloaderEntryName: TR Linux
+    productUrl: https://techrefreshing.com/
+    supportUrl: https://techrefreshing.com/linux/
+    knownIssuesUrl: https://github.com/Techrefreshing/TR-Linux/issues
+    releaseNotesUrl: https://github.com/Techrefreshing/TR-Linux
+
+sidebar: widget
+navigation: widget
+
+images:
+    productLogo: "tr-monogram.png"
+    productIcon: "tr-monogram.png"
+    productWelcome: "welcome.png"
+
+slideshow: "show.qml"
+
+style:
+   SidebarBackground: "#0E1B2B"
+   SidebarText: "#FFFFFF"
+   SidebarTextCurrent: "#FFFFFF"
+   SidebarBackgroundCurrent: "#1565C0"
+
+slideshowAPI: 2
+BRANDING
+
+cat > "$BRAND/show.qml" <<'QML'
+import QtQuick 2.15
+
+Rectangle {
+    width: 800
+    height: 450
+    color: "#0E1B2B"
+    Image {
+        anchors.fill: parent
+        source: "slide1.png"
+        fillMode: Image.PreserveAspectFit
+        smooth: true
+    }
+}
+QML
+
+if [ -f /etc/calamares/settings.conf ]; then
+    if grep -q '^branding:' /etc/calamares/settings.conf; then
+        sed -i 's/^branding:.*/branding: trlinux/' /etc/calamares/settings.conf
+    else
+        printf '\nbranding: trlinux\n' >> /etc/calamares/settings.conf
+    fi
+fi
+
+cat > /etc/calamares/modules/welcome.conf <<'WELCOME'
+---
+showSupportUrl: true
+showKnownIssuesUrl: true
+showReleaseNotesUrl: true
+requirements:
+  requiredStorage: 20.0
+  requiredRam: 2.0
+  check:
+    - storage
+    - ram
+    - root
+WELCOME
