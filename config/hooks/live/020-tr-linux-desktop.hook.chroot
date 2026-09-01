@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
 set -eu
 
 # Remove Debian's live-installer launchers. We keep Debian's tested Calamares
@@ -57,42 +59,20 @@ DESKTOP
 install -d /usr/share/icons/hicolor/512x512/apps
 cp /usr/share/tr-linux/branding/install-tr-linux.png /usr/share/icons/hicolor/512x512/apps/tr-linux-installer.png
 
-# Live-only desktop shortcut. Installed user accounts do not inherit it.
-cat > /usr/local/bin/tr-linux-live-setup <<'LIVESETUP'
-#!/bin/sh
-set -eu
-case "${HOME:-}" in
-    /home/*) ;;
-    *) exit 0 ;;
-esac
+# The first-session setup and welcome application are installed from
+# config/includes.chroot so they can be tested independently of this hook.
+chmod 0755 /usr/local/bin/tr-linux-session-setup /usr/local/bin/tr-linux-welcome /usr/local/bin/tr-linux-welcome-first-run
 
-if [ -d /run/live/medium ] || [ -d /lib/live/mount/medium ] || grep -qw boot=live /proc/cmdline 2>/dev/null; then
-    mkdir -p "$HOME/Desktop"
-    cp /usr/share/applications/install-tr-linux.desktop "$HOME/Desktop/install-tr-linux.desktop"
-    chmod 0755 "$HOME/Desktop/install-tr-linux.desktop"
+# Debian's default wallpaper is visible before Plasma autostart. Replace the
+# desktop-base theme raster images at image-build time so the first rendered
+# frame already uses TechRefreshing artwork.
+find /usr/share/desktop-base -path '*/wallpaper/contents/images/*' -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) -exec ln -sf /usr/share/tr-linux/branding/wallpaper-3840x2160.png {} \; 2>/dev/null || true
+find /usr/share/desktop-base -path '*/wallpaper/contents/images/*' -type f -name '*.svg' -exec ln -sf /usr/share/tr-linux/branding/wallpaper.svg {} \; 2>/dev/null || true
+
+if [ -e /usr/share/images/desktop-base/desktop-background ]; then
+    rm -f /usr/share/images/desktop-base/desktop-background
+    ln -s /usr/share/tr-linux/branding/wallpaper-3840x2160.png /usr/share/images/desktop-base/desktop-background
 fi
-
-marker="$HOME/.config/tr-linux-initialized"
-if [ ! -e "$marker" ]; then
-    mkdir -p "$HOME/.config"
-    if command -v plasma-apply-wallpaperimage >/dev/null 2>&1; then
-        plasma-apply-wallpaperimage /usr/share/tr-linux/branding/wallpaper-3840x2160.png >/dev/null 2>&1 || true
-    fi
-    touch "$marker"
-fi
-LIVESETUP
-chmod 0755 /usr/local/bin/tr-linux-live-setup
-
-install -d /etc/xdg/autostart
-cat > /etc/xdg/autostart/tr-linux-first-login.desktop <<'AUTOSTART'
-[Desktop Entry]
-Type=Application
-Name=TR Linux Initial Setup
-Exec=/usr/local/bin/tr-linux-live-setup
-OnlyShowIn=KDE;
-X-KDE-autostart-after=panel
-NoDisplay=true
-AUTOSTART
 
 # Custom SDDM theme: retain the stable Breeze QML implementation, but replace
 # its visual identity with TechRefreshing branding.

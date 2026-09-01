@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540">
  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071226"/><stop offset="1" stop-color="#0D47A1"/></linearGradient></defs>
  <rect width="960" height="540" fill="url(#g)"/>
- <g transform="translate(375 55) scale(.4)"><image href="logo.svg" width="512" height="512"/></g>
- <text x="480" y="310" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="52" font-weight="700" fill="#fff">Welcome to Tech<tspan fill="#42A5F5">Refreshing</tspan> Linux</text>
- <text x="480" y="375" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="28" fill="#F5F7FA">A stable Debian foundation with a polished KDE Plasma desktop.</text>
- <text x="480" y="430" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="24" fill="#42A5F5">No mandatory telemetry. APT + Flatpak. Built for everyday PCs.</text>
+ <g transform="translate(390 48) scale(.35)"><image href="logo.svg" width="512" height="512"/></g>
+ <text x="480" y="278" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="40" font-weight="700" fill="#fff">Welcome to Tech<tspan fill="#42A5F5">Refreshing</tspan> Linux</text>
+ <text x="480" y="344" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="24" fill="#F5F7FA">A stable Debian foundation with a polished KDE Plasma desktop.</text>
+ <text x="480" y="399" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="21" fill="#42A5F5">No mandatory telemetry · APT + Flatpak · Built for everyday PCs</text>
+ <text x="480" y="467" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" fill="#AFC5DD">Created by Anup Kumar Yadav</text>
 </svg>

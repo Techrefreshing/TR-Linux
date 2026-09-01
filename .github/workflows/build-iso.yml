@@ -78,6 +78,25 @@ jobs:
               test -s /tmp/trroot/usr/share/tr-linux/branding/sddm-background.png
               test -s /tmp/trroot/usr/share/tr-linux/branding/plymouth-logo.png
 
+              # Legal, source, release and support documentation must ship.
+              test -s /tmp/trroot/usr/share/doc/tr-linux/LICENSE
+              test -s /tmp/trroot/usr/share/doc/tr-linux/COPYRIGHT
+              test -s /tmp/trroot/usr/share/doc/tr-linux/PRIVACY.md
+              test -s /tmp/trroot/usr/share/doc/tr-linux/SOURCE-CODE.md
+              test -s /tmp/trroot/usr/share/doc/tr-linux/THIRD-PARTY-NOTICES.md
+              test -s /tmp/trroot/usr/share/doc/tr-linux/package-manifest.txt
+              grep -Fq "Anup Kumar Yadav" /tmp/trroot/usr/share/doc/tr-linux/README
+
+              # Welcome/About application and Plasma layout must be installed.
+              test -x /tmp/trroot/usr/local/bin/tr-linux-welcome
+              test -x /tmp/trroot/usr/local/bin/tr-linux-session-setup
+              test -f /tmp/trroot/usr/share/applications/about-tr-linux.desktop
+              test -f /tmp/trroot/usr/share/applications/tr-linux-welcome.desktop
+              test -s /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq 'writeConfig("icon", "tr-linux")' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq 'location = "top"' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq 'location = "bottom"' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+
               # Only the TR Linux installer entry point should be exposed.
               test -x /tmp/trroot/usr/local/bin/calamares-install-tr-linux
               test -f /tmp/trroot/usr/share/applications/install-tr-linux.desktop
@@ -110,6 +129,9 @@ jobs:
                 "- Elevated installer wrapper present" \
                 "- Stock Debian desktop installer entry absent" \
                 "- Boot menu contains TechRefreshing Linux" \
+                "- Legal, privacy, source and support documents present" \
+                "- Welcome/About application present" \
+                "- Two-panel TR Plasma layout present" \
                 > /work/validation-report.txt
             '
 
@@ -121,6 +143,18 @@ jobs:
         run: |
           ls -lah
           if [ -f build.log ]; then tail -n 250 build.log; fi
+
+      - name: Upload branding previews
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tr-linux-1.0-branding-preview
+          path: |
+            branding/generated/calamares-welcome.png
+            branding/generated/calamares-slide1.png
+            branding/generated/wallpaper-3840x2160.png
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Upload ISO, checksum and validation report
         if: success()

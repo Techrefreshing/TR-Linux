@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=About TechRefreshing Linux
+GenericName=Operating System Information
+Comment=Version, creator, websites, support and legal information
+Exec=/usr/local/bin/tr-linux-welcome --page about
+Icon=tr-linux
+Terminal=false
+Categories=System;Settings;
+Keywords=about;version;creator;license;support;
+StartupNotify=true

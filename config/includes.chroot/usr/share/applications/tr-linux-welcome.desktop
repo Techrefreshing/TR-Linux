@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Welcome to TechRefreshing Linux
+GenericName=System Welcome
+Comment=Learn about TechRefreshing Linux and get started
+Exec=/usr/local/bin/tr-linux-welcome
+Icon=tr-linux
+Terminal=false
+Categories=System;Utility;
+Keywords=welcome;about;support;help;legal;
+StartupNotify=true

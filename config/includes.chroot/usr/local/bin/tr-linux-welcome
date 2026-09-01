@@ -1,0 +1,293 @@
+#!/usr/bin/python3
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+import argparse
+import html
+import os
+import sys
+
+from PyQt6.QtCore import Qt, QUrl
+from PyQt6.QtGui import QDesktopServices, QIcon, QPixmap
+from PyQt6.QtWidgets import (
+    QApplication, QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
+    QMainWindow, QPushButton, QStackedWidget, QTextBrowser, QVBoxLayout,
+    QWidget
+)
+
+DOC_ROOT = "/usr/share/doc/tr-linux"
+LOGO = "/usr/share/tr-linux/branding/tr-monogram.png"
+BLUE = "#42A5F5"
+NAVY = "#071226"
+PANEL = "#0E1B2B"
+TEXT = "#F5F7FA"
+MUTED = "#AFC5DD"
+
+
+def open_url(url):
+    QDesktopServices.openUrl(QUrl(url))
+
+
+def button(label, url):
+    control = QPushButton(label)
+    control.setCursor(Qt.CursorShape.PointingHandCursor)
+    control.clicked.connect(lambda: open_url(url))
+    return control
+
+
+def heading(title, subtitle=""):
+    box = QVBoxLayout()
+    title_label = QLabel(title)
+    title_label.setObjectName("PageTitle")
+    box.addWidget(title_label)
+    if subtitle:
+        sub = QLabel(subtitle)
+        sub.setObjectName("Subtitle")
+        sub.setWordWrap(True)
+        box.addWidget(sub)
+    return box
+
+
+class WelcomePage(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(36, 30, 36, 30)
+        layout.setSpacing(18)
+
+        banner = QFrame()
+        banner.setObjectName("Banner")
+        row = QHBoxLayout(banner)
+        logo = QLabel()
+        pix = QPixmap(LOGO)
+        logo.setPixmap(pix.scaled(128, 128, Qt.AspectRatioMode.KeepAspectRatio,
+                                  Qt.TransformationMode.SmoothTransformation))
+        row.addWidget(logo)
+        words = QVBoxLayout()
+        name = QLabel("Tech<span style='color:#42A5F5'>Refreshing</span> Linux")
+        name.setObjectName("Hero")
+        name.setTextFormat(Qt.TextFormat.RichText)
+        words.addWidget(name)
+        slogan = QLabel("Familiar. Beautiful. Stable.")
+        slogan.setObjectName("Subtitle")
+        words.addWidget(slogan)
+        row.addLayout(words, 1)
+        layout.addWidget(banner)
+
+        layout.addLayout(heading(
+            "Welcome to TechRefreshing Linux 1.0",
+            "A Debian Stable desktop created for familiar, dependable everyday computing."
+        ))
+
+        intro = QLabel(
+            "Use this application to learn about the system, find support, read release "
+            "information, and review privacy and open-source notices."
+        )
+        intro.setWordWrap(True)
+        layout.addWidget(intro)
+
+        actions = QHBoxLayout()
+        actions.addWidget(button("Visit TechRefreshing", "https://techrefreshing.com/"))
+        actions.addWidget(button("Linux guides", "https://linuxano.com/"))
+        actions.addWidget(button(
+            "Report an issue", "https://github.com/Techrefreshing/TR-Linux/issues"
+        ))
+        layout.addLayout(actions)
+        layout.addStretch()
+
+
+class AboutPage(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(36, 30, 36, 30)
+        layout.setSpacing(16)
+        layout.addLayout(heading(
+            "About TechRefreshing Linux",
+            "Debian 13 Stable · KDE Plasma 6 · amd64"
+        ))
+        body = QLabel(
+            "<p><b>Creator:</b> Anup Kumar Yadav</p>"
+            "<p><b>Developed by:</b> TechRefreshing</p>"
+            "<p><b>Version:</b> TechRefreshing Linux 1.0</p>"
+            "<p>TechRefreshing Linux is an independent Debian-based distribution. "
+            "It is not an official Debian product and is not endorsed by the Debian Project.</p>"
+        )
+        body.setWordWrap(True)
+        body.setTextFormat(Qt.TextFormat.RichText)
+        layout.addWidget(body)
+        layout.addWidget(button("https://techrefreshing.com", "https://techrefreshing.com/"))
+        layout.addWidget(button("https://linuxano.com", "https://linuxano.com/"))
+        layout.addStretch()
+
+
+class GettingStartedPage(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(36, 30, 36, 30)
+        layout.setSpacing(14)
+        layout.addLayout(heading("Get started", "A few useful first steps"))
+        text = QLabel(
+            "<ol>"
+            "<li><b>Connect:</b> use the network icon in the top panel.</li>"
+            "<li><b>Update:</b> open Discover and install system and Flatpak updates.</li>"
+            "<li><b>Install apps:</b> use Discover or APT.</li>"
+            "<li><b>Personalise:</b> right-click the desktop or open System Settings.</li>"
+            "<li><b>Back up:</b> protect important files before partition or firmware changes.</li>"
+            "</ol>"
+        )
+        text.setTextFormat(Qt.TextFormat.RichText)
+        text.setWordWrap(True)
+        layout.addWidget(text)
+        layout.addWidget(button("Open online Linux guides", "https://linuxano.com/"))
+        layout.addStretch()
+
+
+class DocumentPage(QWidget):
+    FILES = [
+        ("Release notes", "RELEASE-NOTES.md"),
+        ("Known issues", "KNOWN-ISSUES.md"),
+        ("Support", "SUPPORT.md"),
+        ("Privacy statement", "PRIVACY.md"),
+        ("Legal notices", "THIRD-PARTY-NOTICES.md"),
+        ("Debian attribution", "DEBIAN-ATTRIBUTION.md"),
+        ("Source code and licences", "SOURCE-CODE.md"),
+        ("Warranty disclaimer", "DISCLAIMER.md"),
+        ("Trademark policy", "TRADEMARKS.md"),
+        ("Copyright", "COPYRIGHT"),
+    ]
+
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(30, 24, 30, 24)
+        layout.setSpacing(12)
+        layout.addLayout(heading("Information and legal notices"))
+        content = QHBoxLayout()
+        self.documents = QListWidget()
+        self.documents.setFixedWidth(230)
+        for label, filename in self.FILES:
+            item = QListWidgetItem(label)
+            item.setData(Qt.ItemDataRole.UserRole, filename)
+            self.documents.addItem(item)
+        self.documents.currentItemChanged.connect(
+            lambda current, _previous: self.load_file(
+                current.data(Qt.ItemDataRole.UserRole)
+            ) if current else None
+        )
+        self.browser = QTextBrowser()
+        self.browser.setOpenExternalLinks(True)
+        content.addWidget(self.documents)
+        content.addWidget(self.browser, 1)
+        layout.addLayout(content, 1)
+        self.documents.setCurrentRow(0)
+
+    def load_file(self, filename):
+        path = os.path.join(DOC_ROOT, filename)
+        try:
+            with open(path, "r", encoding="utf-8") as source:
+                content = source.read()
+        except OSError as error:
+            content = f"Unable to open {filename}: {error}"
+        self.browser.setHtml(
+            "<pre style='white-space:pre-wrap; font-family:sans-serif; "
+            "font-size:14px; line-height:1.45'>"
+            + html.escape(content)
+            + "</pre>"
+        )
+
+
+class MainWindow(QMainWindow):
+    PAGE_NAMES = ["Welcome", "About", "Get Started", "Support & Legal"]
+
+    def __init__(self, requested_page):
+        super().__init__()
+        self.setWindowTitle("Welcome to TechRefreshing Linux")
+        self.setWindowIcon(QIcon(LOGO))
+        self.resize(980, 650)
+        self.setMinimumSize(820, 560)
+
+        root = QWidget()
+        outer = QHBoxLayout(root)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
+
+        sidebar = QFrame()
+        sidebar.setObjectName("Sidebar")
+        side = QVBoxLayout(sidebar)
+        side.setContentsMargins(18, 24, 18, 22)
+        brand = QLabel("TR Linux")
+        brand.setObjectName("SideBrand")
+        side.addWidget(brand)
+        self.nav = QListWidget()
+        for name in self.PAGE_NAMES:
+            self.nav.addItem(QListWidgetItem(name))
+        side.addWidget(self.nav, 1)
+        creator = QLabel("Created by\nAnup Kumar Yadav")
+        creator.setObjectName("Creator")
+        side.addWidget(creator)
+        sidebar.setFixedWidth(220)
+        outer.addWidget(sidebar)
+
+        self.stack = QStackedWidget()
+        self.stack.addWidget(WelcomePage())
+        self.stack.addWidget(AboutPage())
+        self.stack.addWidget(GettingStartedPage())
+        self.stack.addWidget(DocumentPage())
+        outer.addWidget(self.stack, 1)
+        self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
+
+        index = {"welcome": 0, "about": 1, "start": 2, "legal": 3}.get(
+            requested_page, 0
+        )
+        self.nav.setCurrentRow(index)
+        self.setCentralWidget(root)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--page", choices=["welcome", "about", "start", "legal"],
+                        default="welcome")
+    args = parser.parse_args()
+    app = QApplication(sys.argv)
+    app.setApplicationName("TechRefreshing Linux Welcome")
+    app.setStyleSheet(f"""
+        QWidget {{
+            background: {NAVY};
+            color: {TEXT};
+            font-family: "Noto Sans", "DejaVu Sans", sans-serif;
+            font-size: 15px;
+        }}
+        #Sidebar {{ background: {PANEL}; border-right: 1px solid #173351; }}
+        #SideBrand {{ color: {BLUE}; font-size: 27px; font-weight: 700; }}
+        #Creator {{ color: {MUTED}; font-size: 12px; }}
+        QListWidget {{
+            background: transparent; border: 0; outline: 0; margin-top: 16px;
+        }}
+        QListWidget::item {{
+            padding: 13px 12px; border-radius: 8px; margin: 3px 0;
+        }}
+        QListWidget::item:selected {{ background: #1565C0; color: white; }}
+        #Banner {{
+            background: #0B2138; border: 1px solid #1B4E79; border-radius: 18px;
+        }}
+        #Hero {{ font-size: 38px; font-weight: 750; }}
+        #PageTitle {{ font-size: 28px; font-weight: 700; }}
+        #Subtitle {{ color: {MUTED}; font-size: 16px; }}
+        QPushButton {{
+            background: #1565C0; border: 0; border-radius: 8px;
+            padding: 10px 14px; font-weight: 600;
+        }}
+        QPushButton:hover {{ background: #1976D2; }}
+        QTextBrowser {{
+            background: #0B1726; border: 1px solid #193A58;
+            border-radius: 10px; padding: 14px;
+        }}
+    """)
+    window = MainWindow(args.page)
+    window.show()
+    return app.exec()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

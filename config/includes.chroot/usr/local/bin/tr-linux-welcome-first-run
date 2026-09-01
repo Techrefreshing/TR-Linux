@@ -1,0 +1,19 @@
+#!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
+
+case "${HOME:-}" in
+    /home/*) ;;
+    *) exit 0 ;;
+esac
+
+marker="$HOME/.config/tr-linux-welcome-seen"
+[ -e "$marker" ] && exit 0
+mkdir -p "$HOME/.config"
+touch "$marker"
+
+# Give Plasma time to finish the panel and desktop layout before presenting
+# the welcome window.
+sleep 6
+exec /usr/local/bin/tr-linux-welcome

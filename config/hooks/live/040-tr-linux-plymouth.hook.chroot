@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
 set -eu
 
 THEME=/usr/share/plymouth/themes/tr-linux

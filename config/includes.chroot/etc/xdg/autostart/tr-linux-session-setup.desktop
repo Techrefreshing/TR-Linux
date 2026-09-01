@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=TechRefreshing Linux Desktop Setup
+Exec=/usr/local/bin/tr-linux-session-setup
+OnlyShowIn=KDE;
+X-KDE-autostart-phase=1
+NoDisplay=true

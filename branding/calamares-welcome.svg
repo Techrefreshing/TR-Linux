@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320">
  <rect width="800" height="320" rx="24" fill="#0E1B2B"/>
- <g transform="translate(75 45) scale(.42)"><image href="logo.svg" width="512" height="512"/></g>
- <text x="340" y="125" font-family="DejaVu Sans, sans-serif" font-size="48" font-weight="700" fill="#fff">Tech<tspan fill="#42A5F5">Refreshing</tspan> Linux</text>
- <text x="342" y="180" font-family="DejaVu Sans, sans-serif" font-size="28" fill="#F5F7FA">Install TR Linux 1.0</text>
- <text x="342" y="225" font-family="DejaVu Sans, sans-serif" font-size="22" fill="#42A5F5">Familiar. Beautiful. Stable.</text>
+ <rect x="18" y="18" width="764" height="284" rx="18" fill="none" stroke="#173F64" stroke-width="2"/>
+ <g transform="translate(72 67) scale(.34)"><image href="logo.svg" width="512" height="512"/></g>
+ <text x="285" y="112" font-family="DejaVu Sans, sans-serif" font-size="39" font-weight="700" fill="#fff">Tech<tspan fill="#42A5F5">Refreshing</tspan></text>
+ <text x="285" y="158" font-family="DejaVu Sans, sans-serif" font-size="32" font-weight="600" fill="#F5F7FA">Linux 1.0</text>
+ <text x="285" y="207" font-family="DejaVu Sans, sans-serif" font-size="25" fill="#F5F7FA">Ready for your everyday PC</text>
+ <text x="285" y="249" font-family="DejaVu Sans, sans-serif" font-size="21" fill="#42A5F5">Familiar. Beautiful. Stable.</text>
 </svg>

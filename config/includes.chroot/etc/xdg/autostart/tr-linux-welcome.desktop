@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=TechRefreshing Linux Welcome
+Exec=/usr/local/bin/tr-linux-welcome-first-run
+OnlyShowIn=KDE;
+X-KDE-autostart-after=panel
+NoDisplay=true

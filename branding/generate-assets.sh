@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
 set -euo pipefail
 OUT="${1:-branding/generated}"
 mkdir -p "$OUT"

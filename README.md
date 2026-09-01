@@ -6,6 +6,21 @@ This repository contains the reproducible ISO build configuration for
 TechRefreshing Linux 1.0: Debian 13 Stable, KDE Plasma 6, Calamares, Flatpak,
 and complete TechRefreshing desktop and boot branding.
 
+Created by **Anup Kumar Yadav**.
+
+- Website: https://techrefreshing.com/
+- Linux guides: https://linuxano.com/
+- Release notes: [RELEASE-NOTES.md](RELEASE-NOTES.md)
+- Known issues: [KNOWN-ISSUES.md](KNOWN-ISSUES.md)
+- Support: [SUPPORT.md](SUPPORT.md)
+- Privacy: [PRIVACY.md](PRIVACY.md)
+- Security: [SECURITY.md](SECURITY.md)
+- Source availability: [SOURCE-CODE.md](SOURCE-CODE.md)
+- Third-party notices: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)
+- Debian attribution: [DEBIAN-ATTRIBUTION.md](DEBIAN-ATTRIBUTION.md)
+- Trademark policy: [TRADEMARKS.md](TRADEMARKS.md)
+- Warranty disclaimer: [DISCLAIMER.md](DISCLAIMER.md)
+
 ## Download
 
 Open **Actions**, select the newest successful **Build TR Linux ISO** run, and
@@ -29,5 +44,12 @@ sudo apt install live-build debootstrap squashfs-tools xorriso isolinux \
   ca-certificates curl wget gnupg librsvg2-bin
 sudo ./build.sh
 ```
+
+## Licensing
+
+Build scripts and distribution configuration are licensed under GPL-3.0-only;
+see [LICENSE](LICENSE). TechRefreshing names, logos, wallpapers, and original
+visual assets use the separate [branding licence](BRANDING-LICENSE.md).
+Third-party packages remain under their respective licences.
 
 > Status: development build. Do not use on production systems until a release is explicitly marked stable.

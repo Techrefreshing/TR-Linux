@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
 set -eu
 
 BRAND=/etc/calamares/branding/trlinux
@@ -11,9 +13,9 @@ cat > "$BRAND/branding.desc" <<'BRANDING'
 ---
 componentName: trlinux
 welcomeStyleCalamares: true
-welcomeExpandingLogo: true
+welcomeExpandingLogo: false
 windowExpanding: normal
-windowSize: 900px,620px
+windowSize: 1000px,680px
 windowPlacement: center
 
 strings:

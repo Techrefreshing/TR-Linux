@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
 set -euo pipefail
 
 VERSION="${VERSION:-1.0}"
@@ -33,10 +35,23 @@ for asset in \
   fi
 done
 
+# Publish project, legal, support, and release documents inside the live and
+# installed systems. Keeping one canonical copy in the repository prevents the
+# ISO notices from drifting away from the public source.
+DOC_DEST="config/includes.chroot/usr/share/doc/tr-linux"
+rm -rf "$DOC_DEST"
+install -d "$DOC_DEST"
+for document in LICENSE COPYRIGHT BRANDING-LICENSE.md THIRD-PARTY-NOTICES.md DEBIAN-ATTRIBUTION.md SOURCE-CODE.md TRADEMARKS.md DISCLAIMER.md PRIVACY.md SECURITY.md RELEASE-NOTES.md SUPPORT.md KNOWN-ISSUES.md RELEASE-CHECKLIST.md; do
+  install -m 0644 "$document" "$DOC_DEST/$document"
+done
+
 # Make approved branding available inside the live root filesystem.
 rm -rf config/includes.chroot/usr/share/tr-linux/branding
 install -d config/includes.chroot/usr/share/tr-linux/branding
 cp -a branding/generated/. config/includes.chroot/usr/share/tr-linux/branding/
+install -m 0644 branding/wallpaper.svg config/includes.chroot/usr/share/tr-linux/branding/wallpaper.svg
+
+chmod 0755 config/includes.chroot/usr/local/bin/tr-linux-welcome config/includes.chroot/usr/local/bin/tr-linux-welcome-first-run config/includes.chroot/usr/local/bin/tr-linux-session-setup
 
 find config/hooks -type f \( -name '*.hook.chroot' -o -name '*.hook.binary' \) -exec chmod 0755 {} + 2>/dev/null || true
 

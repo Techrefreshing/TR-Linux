@@ -1,0 +1,25 @@
+#!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
+
+DOC_ROOT=/usr/share/doc/tr-linux
+install -d "$DOC_ROOT"
+
+# Record the exact binary package set carried by this image. This gives users
+# the package name and version needed to retrieve matching Debian source.
+dpkg-query -W -f='${binary:Package}\t${Version}\t${Architecture}\n' | sort > "$DOC_ROOT/package-manifest.txt"
+
+cat > "$DOC_ROOT/README" <<'DOC'
+TechRefreshing Linux 1.0 documentation
+
+Open "Welcome to TechRefreshing Linux" from the application launcher to read
+release notes, known issues, support information, privacy, source availability,
+third-party notices, Debian attribution, trademarks, copyright, and warranty
+information.
+
+Creator: Anup Kumar Yadav
+Website: https://techrefreshing.com/
+Linux guides: https://linuxano.com/
+Project: https://github.com/Techrefreshing/TR-Linux
+DOC

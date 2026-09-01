@@ -1,0 +1,45 @@
+#!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
+
+case "${HOME:-}" in
+    /home/*) ;;
+    *) exit 0 ;;
+esac
+
+# Only the live session receives an installer icon. It is not copied to a
+# normal installed user's desktop.
+if [ -d /run/live/medium ] || [ -d /lib/live/mount/medium ] ||
+   grep -qw boot=live /proc/cmdline 2>/dev/null; then
+    mkdir -p "$HOME/Desktop"
+    cp /usr/share/applications/install-tr-linux.desktop "$HOME/Desktop/install-tr-linux.desktop"
+    chmod 0755 "$HOME/Desktop/install-tr-linux.desktop"
+fi
+
+marker="$HOME/.config/tr-linux-layout-v2"
+[ -e "$marker" ] && exit 0
+mkdir -p "$HOME/.config"
+
+# Plasma must own its D-Bus interface before the layout can be applied.
+attempt=0
+plasma_ready=0
+while [ "$attempt" -lt 30 ]; do
+    if dbus-send --session --print-reply --dest=org.kde.plasmashell /PlasmaShell org.freedesktop.DBus.Peer.Ping >/dev/null 2>&1; then
+        plasma_ready=1
+        break
+    fi
+    attempt=$((attempt + 1))
+    sleep 1
+done
+
+[ "$plasma_ready" -eq 1 ] || exit 0
+
+if command -v plasma-apply-wallpaperimage >/dev/null 2>&1; then
+    plasma-apply-wallpaperimage /usr/share/tr-linux/branding/wallpaper-3840x2160.png >/dev/null 2>&1 || true
+fi
+
+layout_script=$(cat /usr/share/tr-linux/plasma-layout.js)
+dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript string:"$layout_script" >/dev/null 2>&1 || true
+
+touch "$marker"
