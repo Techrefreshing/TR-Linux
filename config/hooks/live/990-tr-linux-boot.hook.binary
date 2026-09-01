@@ -1,8 +1,8 @@
 #!/bin/sh
 set -eu
 
-BINARY="$(pwd)/binary"
-BUILD_ROOT="$(pwd)"
+BINARY="$(pwd)"
+BUILD_ROOT="$(dirname "$BINARY")"
 BRANDING="$BUILD_ROOT/branding/generated"
 
 if [ ! -d "$BINARY" ]; then
