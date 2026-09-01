@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="${VERSION:-1.0-dev002}"
+VERSION="${VERSION:-1.0}"
 ARCH="${ARCH:-amd64}"
 DIST="${DIST:-trixie}"
 IMAGE_BASE="tr-linux-${VERSION}"

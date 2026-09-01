@@ -41,10 +41,10 @@ jobs:
       - name: Validate checksum
         run: |
           set -euxo pipefail
-          test -s tr-linux-1.0-dev002-amd64.iso
-          test -s tr-linux-1.0-dev002-amd64.iso.sha256
-          sha256sum -c tr-linux-1.0-dev002-amd64.iso.sha256
-          ls -lh tr-linux-1.0-dev002-amd64.iso*
+          test -s tr-linux-1.0-amd64.iso
+          test -s tr-linux-1.0-amd64.iso.sha256
+          sha256sum -c tr-linux-1.0-amd64.iso.sha256
+          ls -lh tr-linux-1.0-amd64.iso*
 
       - name: Validate TR Linux identity, branding and installer inside ISO
         run: |
@@ -60,7 +60,7 @@ jobs:
               rm -rf /tmp/triso /tmp/trroot
               mkdir -p /tmp/triso
               xorriso -osirrox on \
-                -indev tr-linux-1.0-dev002-amd64.iso \
+                -indev tr-linux-1.0-amd64.iso \
                 -extract / /tmp/triso >/tmp/xorriso-extract.log 2>&1
 
               test -s /tmp/triso/live/filesystem.squashfs
@@ -103,7 +103,7 @@ jobs:
               fi
 
               printf "%s\n" \
-                "TR Linux dev002 validation PASSED" \
+                "TR Linux 1.0 validation PASSED" \
                 "- TechRefreshing OS identity present" \
                 "- Branding assets present" \
                 "- Calamares branded as TechRefreshing Linux" \
@@ -126,20 +126,20 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: tr-linux-1.0-dev002-amd64
+          name: tr-linux-1.0-amd64
           path: |
-            tr-linux-1.0-dev002-amd64.iso
-            tr-linux-1.0-dev002-amd64.iso.sha256
+            tr-linux-1.0-amd64.iso
+            tr-linux-1.0-amd64.iso.sha256
             validation-report.txt
             build.log
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
 
       - name: Upload failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: tr-linux-build-log-dev002
+          name: tr-linux-build-log-1.0
           path: |
             build.log
             validation-report.txt

@@ -9,13 +9,13 @@ and complete TechRefreshing desktop and boot branding.
 ## Download
 
 Open **Actions**, select the newest successful **Build TR Linux ISO** run, and
-download the `tr-linux-1.0-dev002-amd64` artifact. The download contains the
+download the `tr-linux-1.0-amd64` artifact. The download contains the
 bootable ISO, SHA-256 checksum, build log, and validation report.
 
 Verify it before writing it to USB:
 
 ```sh
-sha256sum -c tr-linux-1.0-dev002-amd64.iso.sha256
+sha256sum -c tr-linux-1.0-amd64.iso.sha256
 ```
 
 ## Build locally
