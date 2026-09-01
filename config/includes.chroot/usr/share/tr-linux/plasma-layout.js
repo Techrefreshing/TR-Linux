@@ -18,6 +18,9 @@ var appMenu = topPanel.addWidget("org.kde.plasma.appmenu");
 topPanel.addWidget("org.kde.plasma.panelspacer");
 topPanel.addWidget("org.kde.plasma.systemtray");
 topPanel.addWidget("org.kde.plasma.digitalclock");
+// Dedicated session control for lock, log out, restart and shutdown. This is
+// separate from the battery entry inside the system tray.
+topPanel.addWidget("org.kde.plasma.lock_logout");
 
 var dock = new Panel();
 dock.location = "bottom";

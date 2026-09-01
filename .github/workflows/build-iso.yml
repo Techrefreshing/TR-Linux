@@ -107,6 +107,7 @@ jobs:
               grep -Fq "location = \"bottom\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "floating = true" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "lengthMode = \"fit\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "org.kde.plasma.lock_logout" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
 
               # Only the TR Linux installer entry point should be exposed.
               test -x /tmp/trroot/usr/local/bin/calamares-install-tr-linux
@@ -120,6 +121,11 @@ jobs:
               grep -Fq "productName: TechRefreshing Linux" /tmp/trroot/etc/calamares/branding/trlinux/branding.desc
               grep -Eq "^branding:[[:space:]]*trlinux" /tmp/trroot/etc/calamares/settings.conf
               grep -Fq "requiredStorage: 12.0" /tmp/trroot/etc/calamares/modules/welcome.conf
+              grep -Fq "windowSize: 960px,600px" /tmp/trroot/etc/calamares/branding/trlinux/branding.desc
+              grep -Fq "minLength: -1" /tmp/trroot/etc/calamares/modules/users.conf
+              grep -Fq "maxLength: -1" /tmp/trroot/etc/calamares/modules/users.conf
+              grep -Fq "allowWeakPasswords: true" /tmp/trroot/etc/calamares/modules/users.conf
+              grep -Fq "allowWeakPasswordsDefault: true" /tmp/trroot/etc/calamares/modules/users.conf
               if grep -Eq '^[[:space:]]*-[[:space:]]+root$' /tmp/trroot/etc/calamares/modules/welcome.conf; then
                 echo "Misleading Calamares root requirement is still enabled" >&2
                 exit 1
@@ -145,6 +151,9 @@ jobs:
                 "- KDE Welcome disabled; TR control centre present" \
                 "- TR live user identity present" \
                 "- Centred floating dock and top panel present" \
+                "- Top-panel lock/logout/power control present" \
+                "- Calamares accepts weak passwords" \
+                "- Calamares navigation fits common 768px displays" \
                 > /work/validation-report.txt
             '
 

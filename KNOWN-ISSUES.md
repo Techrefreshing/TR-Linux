@@ -13,9 +13,9 @@ This document covers TechRefreshing Linux 1.0. Check GitHub for newer reports.
   reboot unless persistence is configured. Install before routine updating.
 - Dock dimensions can vary slightly with display scaling and translated widget
   labels; the layout constrains it to a centred fit-content range.
-- The installer may reject passwords that fail its dictionary or strength
-  checks.
-- Very small displays may require resizing or maximising the installer.
+- The installer accepts weak passwords when explicitly entered. Simple
+  passwords materially reduce account security and are not recommended.
+- Displays below 1024x600 may still require maximising the installer.
 - Some Wi-Fi, Bluetooth, fingerprint, webcam, or audio devices may require
   newer firmware or kernels than Debian Stable provides.
 - Flatpak applications consume additional disk space after installation.

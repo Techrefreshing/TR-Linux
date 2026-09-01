@@ -14,6 +14,8 @@ beginner-friendly desktop intended for everyday PCs.
 - TR-branded first-run experience in place of KDE Welcome
 - TechRefreshing Live User (`trlinux`) live-session identity
 - TR distributor logo and TechRefreshing Linux 1.0 system identity
+- Top-bar session control for lock, log out, restart, and shutdown
+- Screen-fit Calamares window with unrestricted user-password acceptance
 - Wayland session with X11 components available for compatibility
 - Calamares graphical installer
 - APT and Flatpak with Flathub configured
