@@ -93,9 +93,9 @@ jobs:
               test -f /tmp/trroot/usr/share/applications/about-tr-linux.desktop
               test -f /tmp/trroot/usr/share/applications/tr-linux-welcome.desktop
               test -s /tmp/trroot/usr/share/tr-linux/plasma-layout.js
-              grep -Fq 'writeConfig("icon", "tr-linux")' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
-              grep -Fq 'location = "top"' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
-              grep -Fq 'location = "bottom"' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "writeConfig(\"icon\", \"tr-linux\")" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "location = \"top\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "location = \"bottom\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
 
               # Only the TR Linux installer entry point should be exposed.
               test -x /tmp/trroot/usr/local/bin/calamares-install-tr-linux
