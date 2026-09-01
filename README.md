@@ -57,3 +57,8 @@ Third-party packages remain under their respective licences.
 The live session uses the display name **TechRefreshing Live User**, username
 `trlinux`, and hostname `tr-linux`. The desktop supplies a TR-branded first-run
 control centre, a slim top bar, and a centred floating application dock.
+
+The installed system applies a TechRefreshing GRUB theme, animated Plymouth
+splash, TR user avatar, and post-install identity finalizer. The Control Centre
+also provides hardware readiness checks, privacy-filtered diagnostics, package
+and boot repair, Timeshift restore points, and four curated Plasma layouts.

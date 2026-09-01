@@ -16,6 +16,12 @@ beginner-friendly desktop intended for everyday PCs.
 - TR distributor logo and TechRefreshing Linux 1.0 system identity
 - Top-bar session control for lock, log out, restart, and shutdown
 - Screen-fit Calamares window with unrestricted user-password acceptance
+- Consistent installed-system TR identity, user avatar, and live-only cleanup
+- Graphical TechRefreshing GRUB theme applied before the first installed boot
+- Lightweight animated Plymouth splash with encryption-password support
+- Curated Modern, Familiar, Classic, and Lightweight desktop profiles
+- Hardware readiness, privacy-filtered diagnostics, package repair, boot repair,
+  and support-report tools in the TechRefreshing Control Centre
 - Wayland session with X11 components available for compatibility
 - Calamares graphical installer
 - APT and Flatpak with Flathub configured

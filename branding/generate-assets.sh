@@ -21,3 +21,6 @@ render branding/boot-background.svg "$OUT/isolinux-splash.png" 640 480
 render branding/calamares-welcome.svg "$OUT/calamares-welcome.png" 800 320
 render branding/calamares-slide1.svg "$OUT/calamares-slide1.png" 960 540
 render branding/plymouth-logo.svg "$OUT/plymouth-logo.png" 900 300
+render branding/plymouth-star.svg "$OUT/plymouth-star.png" 64 64
+render branding/plymouth-dot.svg "$OUT/plymouth-dot.png" 22 22
+render branding/grub-select.svg "$OUT/grub-select.png" 12 12

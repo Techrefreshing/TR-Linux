@@ -79,6 +79,8 @@ jobs:
               test -s /tmp/trroot/usr/share/tr-linux/branding/wallpaper-3840x2160.png
               test -s /tmp/trroot/usr/share/tr-linux/branding/sddm-background.png
               test -s /tmp/trroot/usr/share/tr-linux/branding/plymouth-logo.png
+              test -s /tmp/trroot/usr/share/tr-linux/branding/plymouth-star.png
+              test -s /tmp/trroot/usr/share/tr-linux/branding/plymouth-dot.png
               test -L /tmp/trroot/usr/share/icons/hicolor/256x256/apps/distributor-logo.png
               test "$(readlink /tmp/trroot/usr/share/icons/hicolor/256x256/apps/distributor-logo.png)" = "tr-linux.png"
 
@@ -108,6 +110,38 @@ jobs:
               grep -Fq "floating = true" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "lengthMode = \"fit\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "org.kde.plasma.lock_logout" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "applications:org.kde.dolphin.desktop" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "applications:firefox-esr.desktop" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "applications:org.kde.discover.desktop" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "applications:tr-linux-welcome.desktop" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+
+              # Installed-system finalization, recovery, diagnostics and layout profiles.
+              test -x /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
+              test -x /tmp/trroot/usr/local/bin/tr-linux-diagnostics
+              test -x /tmp/trroot/usr/local/bin/tr-linux-hardware-check
+              test -x /tmp/trroot/usr/local/bin/tr-linux-reset-desktop
+              test -f /tmp/trroot/etc/systemd/system/multi-user.target.wants/tr-linux-first-boot.service
+              grep -Fq "shellprocess@tridentity" /tmp/trroot/etc/calamares/settings.conf
+              test -s /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
+              grep -Fq "tr-linux-finalize-target" /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
+              grep -Fq "AccountsService/icons" /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
+              grep -Fq "GRUB_DISTRIBUTOR=\"TechRefreshing Linux\"" /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
+              grep -Fq "tr-linux-welcome.desktop" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+
+              # Graphical installed GRUB and animated Plymouth themes.
+              test -s /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
+              test -s /tmp/trroot/boot/grub/themes/tr-linux/background.png
+              test -s /tmp/trroot/etc/default/grub.d/99-tr-linux.cfg
+              grep -Fq "TechRefreshing Linux" /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
+              test -s /tmp/trroot/usr/share/plymouth/themes/tr-linux/tr-linux.script
+              grep -Fq "SetRefreshFunction" /tmp/trroot/usr/share/plymouth/themes/tr-linux/tr-linux.script
+              grep -Fq "SetDisplayPasswordFunction" /tmp/trroot/usr/share/plymouth/themes/tr-linux/tr-linux.script
+
+              # The defining TR tools and snapshot utility must be installed.
+              chroot /tmp/trroot dpkg-query -s timeshift | grep -Fq "Status: install ok installed"
+              grep -Fq "Desktop profiles" /tmp/trroot/usr/local/bin/tr-linux-welcome
+              grep -Fq "Hardware readiness" /tmp/trroot/usr/local/bin/tr-linux-welcome
+              grep -Fq "Create support report" /tmp/trroot/usr/local/bin/tr-linux-welcome
 
               # Only the TR Linux installer entry point should be exposed.
               test -x /tmp/trroot/usr/local/bin/calamares-install-tr-linux
@@ -154,6 +188,11 @@ jobs:
                 "- Top-panel lock/logout/power control present" \
                 "- Calamares accepts weak passwords" \
                 "- Calamares navigation fits common 768px displays" \
+                "- Installed identity and TR user-avatar finalizer present" \
+                "- Correct Dolphin, Firefox, Discover and TR dock launchers present" \
+                "- Graphical installed GRUB theme present" \
+                "- Animated Plymouth theme with password prompt present" \
+                "- Diagnostics, recovery, snapshots and desktop profiles present" \
                 > /work/validation-report.txt
             '
 

@@ -1,0 +1,27 @@
+#!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
+
+echo "TechRefreshing Linux hardware readiness"
+echo "========================================"
+printf 'Boot mode: '
+if [ -d /sys/firmware/efi ]; then echo UEFI; else echo 'Legacy BIOS'; fi
+printf 'Secure Boot: '
+if command -v mokutil >/dev/null 2>&1; then mokutil --sb-state 2>/dev/null || echo unknown; else echo 'check unavailable'; fi
+printf 'Memory: '
+free -h | awk '/Mem:/ {print $2}'
+echo "Storage:"
+lsblk -d -o NAME,SIZE,MODEL,TRAN
+echo "Graphics:"
+lspci | grep -Ei 'vga|3d|display' || echo 'No PCI graphics entry found'
+echo "Network:"
+lspci | grep -Ei 'network|ethernet|wireless' || echo 'No PCI network entry found'
+echo "Audio:"
+lspci | grep -i audio || echo 'No PCI audio entry found'
+echo "Firmware warnings:"
+dmesg 2>/dev/null | grep -i 'firmware.*failed' | tail -n 10 || true
+echo
+echo "Test Wi-Fi, sound, display scaling, suspend and external storage in the"
+echo "live session before installing. Hardware detection does not guarantee"
+echo "that every device feature is supported."

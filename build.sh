@@ -28,7 +28,8 @@ for asset in \
   tr-monogram.png tr-wordmark.png install-tr-linux.png \
   wallpaper-3840x2160.png sddm-background.png \
   isolinux-splash.png grub-background.png \
-  calamares-welcome.png calamares-slide1.png plymouth-logo.png; do
+  calamares-welcome.png calamares-slide1.png plymouth-logo.png \
+  plymouth-star.png plymouth-dot.png grub-select.png; do
   if [[ ! -f "branding/generated/${asset}" ]]; then
     echo "Missing generated branding asset: branding/generated/${asset}" >&2
     exit 1
@@ -51,7 +52,7 @@ install -d config/includes.chroot/usr/share/tr-linux/branding
 cp -a branding/generated/. config/includes.chroot/usr/share/tr-linux/branding/
 install -m 0644 branding/wallpaper.svg config/includes.chroot/usr/share/tr-linux/branding/wallpaper.svg
 
-chmod 0755 config/includes.chroot/usr/local/bin/tr-linux-welcome config/includes.chroot/usr/local/bin/tr-linux-welcome-first-run config/includes.chroot/usr/local/bin/tr-linux-session-setup
+chmod 0755 config/includes.chroot/usr/local/bin/tr-linux-welcome config/includes.chroot/usr/local/bin/tr-linux-welcome-first-run config/includes.chroot/usr/local/bin/tr-linux-session-setup config/includes.chroot/usr/local/sbin/tr-linux-finalize-target config/includes.chroot/usr/local/bin/tr-linux-diagnostics config/includes.chroot/usr/local/bin/tr-linux-hardware-check config/includes.chroot/usr/local/bin/tr-linux-reset-desktop
 
 find config/hooks -type f \( -name '*.hook.chroot' -o -name '*.hook.binary' \) -exec chmod 0755 {} + 2>/dev/null || true
 

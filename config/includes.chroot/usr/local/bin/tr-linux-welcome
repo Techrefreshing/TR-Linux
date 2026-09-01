@@ -221,6 +221,19 @@ class SystemPage(QWidget):
             [launch("Disk usage", "filelight"), command_button(
                 "Clean APT cache", "sudo apt clean; echo 'APT cache cleaned.'; exec bash",
                 "This deletes downloaded APT package files. Installed software is not removed."
+            ), launch("Restore points", "timeshift-gtk")]
+        ))
+        layout.addWidget(section(
+            "Repair and support",
+            "Repair interrupted packages, refresh GRUB, or create a privacy-filtered support report.",
+            [command_button(
+                "Repair packages", "sudo dpkg --configure -a && sudo apt -f install; exec bash",
+                "This completes interrupted package configuration and attempts to repair dependencies."
+            ), command_button(
+                "Repair boot menu", "sudo /usr/local/sbin/tr-linux-finalize-target; exec bash",
+                "This reapplies TR identity, rebuilds initramfs, and regenerates GRUB."
+            ), command_button(
+                "Create support report", "/usr/local/bin/tr-linux-diagnostics; exec bash"
             )]
         ))
         layout.addStretch()
@@ -273,6 +286,19 @@ class SetupPage(QWidget):
         for index, (label, program, arguments) in enumerate(actions):
             grid.addWidget(launch(label, program, arguments), index // 2, index % 2)
         layout.addLayout(grid)
+        layout.addWidget(section(
+            "Desktop profiles",
+            "Switch between curated TR layouts. Modern is the default macOS-style experience.",
+            [command_button("TR Modern", "tr-linux-reset-desktop modern; exec bash"),
+             command_button("TR Familiar", "tr-linux-reset-desktop familiar; exec bash"),
+             command_button("TR Classic", "tr-linux-reset-desktop classic; exec bash"),
+             command_button("TR Lightweight", "tr-linux-reset-desktop lightweight; exec bash")]
+        ))
+        layout.addWidget(section(
+            "Hardware readiness",
+            "Review boot mode, graphics, network, audio, memory, storage, and firmware warnings.",
+            [command_button("Run hardware check", "tr-linux-hardware-check; exec bash")]
+        ))
         layout.addStretch()
 
 

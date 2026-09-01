@@ -1,0 +1,70 @@
+#!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
+
+THEME=/boot/grub/themes/tr-linux
+install -d "$THEME" /etc/default/grub.d
+cp /usr/share/tr-linux/branding/grub-background.png "$THEME/background.png"
+cp /usr/share/tr-linux/branding/tr-monogram.png "$THEME/logo.png"
+
+cat > "$THEME/theme.txt" <<'THEME'
+title-text: "TechRefreshing Linux"
+title-font: "DejaVu Sans Bold 24"
+title-color: "#f5f7fa"
+desktop-image: "background.png"
+desktop-color: "#071226"
+message-color: "#f5f7fa"
+message-bg-color: "#0e1b2b"
+terminal-box: "0 0 0 0"
+terminal-font: "DejaVu Sans Mono 14"
+
++ image {
+    file = "logo.png"
+    left = 46%
+    top = 12%
+    width = 8%
+    height = 18%
+}
+
++ boot_menu {
+    left = 24%
+    top = 36%
+    width = 52%
+    height = 36%
+    item_font = "DejaVu Sans Regular 16"
+    item_color = "#d8e8f7"
+    selected_item_color = "#ffffff"
+    selected_item_pixmap_style = "select_*.png"
+    item_height = 34
+    item_padding = 12
+    item_spacing = 6
+}
+
++ label {
+    left = 0
+    top = 88%
+    width = 100%
+    align = "center"
+    text = "Familiar. Beautiful. Stable."
+    font = "DejaVu Sans Regular 14"
+    color = "#42a5f5"
+}
+THEME
+
+# Nine-slice selection image from the approved blue brand colour.
+cp /usr/share/tr-linux/branding/grub-select.png "$THEME/select_c.png"
+for part in n s e w nw ne sw se; do
+    cp "$THEME/select_c.png" "$THEME/select_${part}.png"
+done
+
+cat > /etc/default/grub.d/99-tr-linux.cfg <<'GRUBCFG'
+GRUB_DISTRIBUTOR="TechRefreshing Linux"
+GRUB_DEFAULT=0
+GRUB_TIMEOUT_STYLE=menu
+GRUB_TIMEOUT=5
+GRUB_GFXMODE=auto
+GRUB_GFXPAYLOAD_LINUX=keep
+GRUB_THEME="/boot/grub/themes/tr-linux/theme.txt"
+GRUB_BACKGROUND="/boot/grub/themes/tr-linux/background.png"
+GRUBCFG

@@ -52,7 +52,7 @@ tasks.writeConfig(
     "applications:org.kde.dolphin.desktop," +
     "applications:firefox-esr.desktop," +
     "applications:org.kde.discover.desktop," +
-    "applications:systemsettings.desktop"
+    "applications:tr-linux-welcome.desktop"
 );
 
 dock.addWidget("org.kde.plasma.showdesktop");

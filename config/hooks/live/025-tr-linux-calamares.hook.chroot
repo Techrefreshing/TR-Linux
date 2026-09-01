@@ -74,7 +74,25 @@ if [ -f /etc/calamares/settings.conf ]; then
     else
         printf '\nbranding: trlinux\n' >> /etc/calamares/settings.conf
     fi
+
+    # Apply branding inside the target after the bootloader module has written
+    # its files but before Calamares unmounts the installation.
+    if ! grep -q 'shellprocess@tridentity' /etc/calamares/settings.conf; then
+        sed -i '/^[[:space:]]*- umount[[:space:]]*$/i\      - shellprocess@tridentity' /etc/calamares/settings.conf
+    fi
 fi
+
+cat > /etc/calamares/modules/shellprocess-tridentity.conf <<'IDENTITY'
+---
+dontChroot: false
+timeout: 180
+verbose: true
+script:
+  - command: "/usr/local/sbin/tr-linux-finalize-target '${USER}'"
+    timeout: 180
+i18n:
+  name: "Applying TechRefreshing identity"
+IDENTITY
 
 cat > /etc/calamares/modules/welcome.conf <<'WELCOME'
 ---

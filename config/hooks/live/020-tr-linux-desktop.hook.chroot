@@ -109,6 +109,7 @@ NM
 systemctl enable NetworkManager.service || true
 systemctl enable sddm.service || true
 systemctl enable fwupd.service || true
+systemctl enable tr-linux-first-boot.service || true
 
 # TR Linux provides its own first-run centre. Suppress KDE's separate Welcome
 # Centre without removing shared Plasma libraries.
@@ -129,3 +130,15 @@ for size in 64 128 256 512; do
 done
 
 gtk-update-icon-cache -f /usr/share/icons/hicolor >/dev/null 2>&1 || true
+
+# Brand the live account immediately. The installed account is handled by the
+# Calamares target finalizer once its chosen username exists.
+install -d /var/lib/AccountsService/icons /var/lib/AccountsService/users
+cp /usr/share/tr-linux/branding/tr-monogram.png /var/lib/AccountsService/icons/trlinux
+cat > /var/lib/AccountsService/users/trlinux <<'ACCOUNT'
+[User]
+Icon=/var/lib/AccountsService/icons/trlinux
+SystemAccount=false
+ACCOUNT
+chmod 0644 /var/lib/AccountsService/icons/trlinux
+chmod 0600 /var/lib/AccountsService/users/trlinux

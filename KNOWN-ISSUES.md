@@ -16,6 +16,10 @@ This document covers TechRefreshing Linux 1.0. Check GitHub for newer reports.
 - The installer accepts weak passwords when explicitly entered. Simple
   passwords materially reduce account security and are not recommended.
 - Displays below 1024x600 may still require maximising the installer.
+- The graphical GRUB and Plymouth experience depends on firmware graphics
+  support. Unsupported modes fall back to GRUB/Plymouth text output.
+- Restore points and filesystem snapshots are not enabled automatically in
+  1.0; back up important data before system or partition changes.
 - Some Wi-Fi, Bluetooth, fingerprint, webcam, or audio devices may require
   newer firmware or kernels than Debian Stable provides.
 - Flatpak applications consume additional disk space after installation.

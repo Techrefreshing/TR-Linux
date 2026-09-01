@@ -1,0 +1,101 @@
+#!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
+
+requested_user="${1:-}"
+
+if [ -d /run/live/medium ] || [ -d /lib/live/mount/medium ]; then
+    echo "TR identity finalization is only available on an installed system." >&2
+    exit 1
+fi
+
+cat > /usr/lib/os-release <<'OSRELEASE'
+PRETTY_NAME="TechRefreshing Linux 1.0"
+NAME="TechRefreshing Linux"
+VERSION_ID="1.0"
+VERSION="1.0 (Trixie)"
+VERSION_CODENAME=trixie
+ID=trlinux
+ID_LIKE=debian
+HOME_URL="https://techrefreshing.com/"
+SUPPORT_URL="https://techrefreshing.com/linux/"
+BUG_REPORT_URL="https://github.com/Techrefreshing/TR-Linux/issues"
+LOGO=tr-linux
+OSRELEASE
+ln -sf ../usr/lib/os-release /etc/os-release
+printf '%s\n' 'TechRefreshing Linux 1.0 \n \l' > /etc/issue
+printf '%s\n' 'TechRefreshing Linux 1.0' > /etc/issue.net
+
+# Standard desktop identity names queried by KInfoCenter, AccountsService and
+# application menus. Debian package artwork and legal attribution are retained.
+for size in 64 128 256 512; do
+    icon_dir="/usr/share/icons/hicolor/${size}x${size}/apps"
+    install -d "$icon_dir"
+    cp /usr/share/tr-linux/branding/tr-monogram.png "$icon_dir/tr-linux.png"
+    ln -sf tr-linux.png "$icon_dir/distributor-logo.png"
+    ln -sf tr-linux.png "$icon_dir/system-logo.png"
+    ln -sf tr-linux.png "$icon_dir/start-here.png"
+done
+install -d /usr/share/pixmaps
+cp /usr/share/tr-linux/branding/tr-monogram.png /usr/share/pixmaps/tr-linux.png
+gtk-update-icon-cache -f /usr/share/icons/hicolor >/dev/null 2>&1 || true
+
+set_avatar() {
+    account="$1"
+    [ -n "$account" ] || return 0
+    getent passwd "$account" >/dev/null 2>&1 || return 0
+    install -d /var/lib/AccountsService/icons /var/lib/AccountsService/users
+    cp /usr/share/tr-linux/branding/tr-monogram.png "/var/lib/AccountsService/icons/$account"
+    chmod 0644 "/var/lib/AccountsService/icons/$account"
+    cat > "/var/lib/AccountsService/users/$account" <<ACCOUNT
+[User]
+Icon=/var/lib/AccountsService/icons/$account
+SystemAccount=false
+ACCOUNT
+    chmod 0600 "/var/lib/AccountsService/users/$account"
+}
+
+if [ -n "$requested_user" ]; then
+    set_avatar "$requested_user"
+else
+    getent passwd | awk -F: '$3 >= 1000 && $3 < 60000 {print $1}' | while read -r account; do
+        set_avatar "$account"
+    done
+fi
+
+# Live-only installer entries must never remain in the installed application
+# menu or on an installed user's desktop.
+rm -f /usr/share/applications/install-tr-linux.desktop
+rm -f /usr/local/bin/calamares-install-tr-linux
+rm -f /etc/sudoers.d/tr-linux-live-installer
+find /home -path '*/Desktop/install-tr-linux.desktop' -type f -delete 2>/dev/null || true
+
+# Force the installed GRUB identity and theme. This runs after Calamares'
+# bootloader job, so the first installed boot is branded too.
+install -d /etc/default/grub.d
+cat > /etc/default/grub.d/99-tr-linux.cfg <<'GRUBCFG'
+GRUB_DISTRIBUTOR="TechRefreshing Linux"
+GRUB_DEFAULT=0
+GRUB_TIMEOUT_STYLE=menu
+GRUB_TIMEOUT=5
+GRUB_GFXMODE=auto
+GRUB_GFXPAYLOAD_LINUX=keep
+GRUB_THEME="/boot/grub/themes/tr-linux/theme.txt"
+GRUB_BACKGROUND="/boot/grub/themes/tr-linux/background.png"
+GRUBCFG
+
+if grep -q '^GRUB_DISTRIBUTOR=' /etc/default/grub 2>/dev/null; then
+    sed -i 's/^GRUB_DISTRIBUTOR=.*/GRUB_DISTRIBUTOR="TechRefreshing Linux"/' /etc/default/grub
+else
+    printf '%s\n' 'GRUB_DISTRIBUTOR="TechRefreshing Linux"' >> /etc/default/grub
+fi
+
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+    plymouth-set-default-theme tr-linux || true
+fi
+update-initramfs -u -k all || true
+update-grub || true
+
+install -d /var/lib/tr-linux
+touch /var/lib/tr-linux/identity-v2

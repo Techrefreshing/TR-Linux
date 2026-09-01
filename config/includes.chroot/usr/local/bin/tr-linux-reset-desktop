@@ -1,0 +1,23 @@
+#!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
+
+profile="${1:-modern}"
+case "$profile" in
+    modern) script=/usr/share/tr-linux/plasma-layout.js ;;
+    familiar) script=/usr/share/tr-linux/plasma-layout-familiar.js ;;
+    classic) script=/usr/share/tr-linux/plasma-layout-classic.js ;;
+    lightweight) script=/usr/share/tr-linux/plasma-layout-lightweight.js ;;
+    *) echo "Usage: tr-linux-reset-desktop modern|familiar|classic|lightweight" >&2; exit 2 ;;
+esac
+
+layout=$(cat "$script")
+dbus-send --session --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript string:"$layout" >/dev/null
+if [ "$profile" = lightweight ]; then
+    kwriteconfig6 --file kwinrc --group Compositing --key Enabled false || true
+else
+    kwriteconfig6 --file kwinrc --group Compositing --key Enabled true || true
+fi
+qdbus6 org.kde.KWin /KWin reconfigure >/dev/null 2>&1 || true
+echo "Applied the TR $profile desktop profile."

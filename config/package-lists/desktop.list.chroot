@@ -28,6 +28,7 @@ plasma-discover-backend-flatpak
 plasma-discover-backend-fwupd
 filelight
 synaptic
+timeshift
 flatpak
 fwupd
 firefox-esr
@@ -61,5 +62,7 @@ rsync
 ca-certificates
 bash-completion
 locales
+pciutils
+mokutil
 python3-pyqt6
 dbus-bin

@@ -1,0 +1,14 @@
+[Unit]
+Description=Finalize TechRefreshing Linux identity
+After=local-fs.target
+Before=display-manager.service
+ConditionPathExists=!/run/live/medium
+ConditionPathExists=!/lib/live/mount/medium
+ConditionPathExists=!/var/lib/tr-linux/identity-v2
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/tr-linux-finalize-target
+
+[Install]
+WantedBy=multi-user.target

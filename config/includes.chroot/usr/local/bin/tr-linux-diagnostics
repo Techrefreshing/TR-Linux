@@ -1,0 +1,36 @@
+#!/bin/sh
+# Copyright © 2026 TechRefreshing
+# SPDX-License-Identifier: GPL-3.0-only
+set -eu
+
+output="${1:-$HOME/tr-linux-support-report.txt}"
+{
+    echo "TechRefreshing Linux support report"
+    echo "Generated: $(date -u '+%Y-%m-%d %H:%M UTC')"
+    echo
+    echo "== Operating system =="
+    cat /etc/os-release 2>/dev/null || true
+    uname -a
+    echo
+    echo "== Desktop =="
+    printf 'Session: %s\n' "${XDG_SESSION_TYPE:-unknown}"
+    plasmashell --version 2>/dev/null || true
+    echo
+    echo "== Hardware summary =="
+    lscpu 2>/dev/null | sed -n '1,18p' || true
+    free -h 2>/dev/null || true
+    lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINTS 2>/dev/null || true
+    echo
+    echo "== Graphics and network devices =="
+    lspci 2>/dev/null | grep -Ei 'vga|3d|display|network|ethernet|wireless' || true
+    echo
+    echo "== Failed services =="
+    systemctl --failed --no-pager 2>/dev/null || true
+    echo
+    echo "== Package state =="
+    dpkg --audit 2>/dev/null || true
+    echo
+    echo "Privacy note: IP addresses, Wi-Fi names, serial numbers, usernames and"
+    echo "home-directory paths are intentionally omitted. Review before sharing."
+} > "$output"
+printf 'Support report saved to %s\n' "$output"
