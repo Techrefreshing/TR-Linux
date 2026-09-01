@@ -1,38 +1,48 @@
 #!/bin/sh
 set -eu
 
+BUILD_ROOT="${LB_BUILD_DIR:-$(pwd)}"
+BINARY="$BUILD_ROOT/binary"
+BRANDING="$BUILD_ROOT/branding/generated"
+
+if [ ! -d "$BINARY" ]; then
+    echo "TR Linux boot hook: binary tree not found at $BINARY" >&2
+    exit 1
+fi
+
+brand_configs() {
+    root="$1"
+    [ -d "$root" ] || return 0
+    find "$root" -type f \( -name '*.cfg' -o -name '*.conf' \) -exec sed -i \
+      -e 's/Debian GNU\/Linux/TechRefreshing Linux/g' \
+      -e 's/Debian Live/TechRefreshing Linux/g' \
+      -e 's/Debian/TechRefreshing Linux/g' \
+      -e 's/Live system (amd64 fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
+      -e 's/Live system (amd64)/Try or Install TechRefreshing Linux/g' \
+      -e 's/Live system (fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
+      -e 's/Live system/Try or Install TechRefreshing Linux/g' \
+      -e 's#splash\.svg#splash.png#g' {} +
+}
+
 # BIOS / ISOLINUX branding.
-if [ -d binary/isolinux ]; then
-    cp branding/generated/isolinux-splash.png binary/isolinux/splash.png
-    rm -f binary/isolinux/splash.svg
-    for f in binary/isolinux/*.cfg; do
-        [ -f "$f" ] || continue
-        sed -i \
-          -e 's/Debian GNU\/Linux/TechRefreshing Linux/g' \
-          -e 's/Live system (amd64 fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
-          -e 's/Live system (amd64)/Try or Install TechRefreshing Linux/g' \
-          -e 's/Live system (fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
-          -e 's/Live system/Try or Install TechRefreshing Linux/g' \
-          "$f"
-    done
+if [ -d "$BINARY/isolinux" ]; then
+    cp "$BRANDING/isolinux-splash.png" "$BINARY/isolinux/splash.png"
+    rm -f "$BINARY/isolinux/splash.svg"
+    brand_configs "$BINARY/isolinux"
 fi
 
 # UEFI / GRUB branding.
-if [ -d binary/boot/grub ]; then
-    cp branding/generated/grub-background.png binary/boot/grub/splash.png
-    for f in binary/boot/grub/*.cfg; do
-        [ -f "$f" ] || continue
-        sed -i \
-          -e 's/Debian GNU\/Linux/TechRefreshing Linux/g' \
-          -e 's/Live system (amd64 fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
-          -e 's/Live system (amd64)/Try or Install TechRefreshing Linux/g' \
-          -e 's/Live system (fail-safe mode)/TechRefreshing Linux (Safe Graphics)/g' \
-          -e 's/Live system/Try or Install TechRefreshing Linux/g' \
-          -e 's#splash\.svg#splash.png#g' \
-          "$f"
-    done
+if [ -d "$BINARY/boot/grub" ]; then
+    cp "$BRANDING/grub-background.png" "$BINARY/boot/grub/splash.png"
+    brand_configs "$BINARY/boot/grub"
 fi
 
-install -d binary/.disk
-printf '%s\n' 'TechRefreshing Linux 1.0 (TR Linux) amd64' > binary/.disk/info
-: > binary/.disk/base_installable
+install -d "$BINARY/.disk"
+printf '%s\n' 'TechRefreshing Linux 1.0 (TR Linux) amd64' > "$BINARY/.disk/info"
+: > "$BINARY/.disk/base_installable"
+
+if ! grep -Rqs 'TechRefreshing Linux' "$BINARY/isolinux" "$BINARY/boot/grub" 2>/dev/null; then
+    echo 'TR Linux boot hook: no branded BIOS/UEFI menu entry was produced' >&2
+    find "$BINARY" -maxdepth 4 -type f \( -name '*.cfg' -o -name '*.conf' \) -print >&2
+    exit 1
+fi

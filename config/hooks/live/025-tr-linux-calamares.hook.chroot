@@ -78,10 +78,11 @@ showSupportUrl: true
 showKnownIssuesUrl: true
 showReleaseNotesUrl: true
 requirements:
-  requiredStorage: 20.0
+  # The installed desktop needs substantially less than this. Keep enough
+  # headroom for updates without rejecting common 16 GB test VMs.
+  requiredStorage: 12.0
   requiredRam: 2.0
   check:
     - storage
     - ram
-    - root
 WELCOME

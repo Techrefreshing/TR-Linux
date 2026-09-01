@@ -32,6 +32,15 @@ exit $?
 WRAPPER
 chmod 0755 /usr/local/bin/calamares-install-tr-linux
 
+# The live account is intentionally passwordless for installer elevation. The
+# rule is harmless on the installed system because the live user is not copied
+# by Calamares.
+install -d -m 0750 /etc/sudoers.d
+cat > /etc/sudoers.d/tr-linux-live-installer <<'SUDOERS'
+live ALL=(root) NOPASSWD: /usr/bin/calamares
+SUDOERS
+chmod 0440 /etc/sudoers.d/tr-linux-live-installer
+
 cat > /usr/share/applications/install-tr-linux.desktop <<'DESKTOP'
 [Desktop Entry]
 Type=Application
