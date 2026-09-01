@@ -23,12 +23,17 @@ var dock = new Panel();
 dock.location = "bottom";
 dock.height = 58;
 dock.hiding = "windowscover";
+// Plasma 6 uses fill=false plus lengthMode for a content-sized centred panel.
+dock.alignment = "center";
+dock.floating = true;
+dock.lengthMode = "fit";
 
 try {
-    dock.floating = true;
-    dock.alignment = "center";
-    dock.minimumLength = 560;
-    dock.maximumLength = 760;
+    dock.writeConfig("floating", "1");
+    dock.writeConfig("alignment", "center");
+    dock.writeConfig("lengthMode", "fit");
+    dock.writeConfig("minLength", "420");
+    dock.writeConfig("maxLength", "760");
 } catch (error) {
     // Older Plasma scripting APIs safely ignore the optional dock geometry.
 }

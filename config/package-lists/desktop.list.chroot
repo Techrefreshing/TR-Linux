@@ -26,6 +26,8 @@ kdeconnect
 plasma-discover
 plasma-discover-backend-flatpak
 plasma-discover-backend-fwupd
+filelight
+synaptic
 flatpak
 fwupd
 firefox-esr

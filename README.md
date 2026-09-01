@@ -53,3 +53,7 @@ visual assets use the separate [branding licence](BRANDING-LICENSE.md).
 Third-party packages remain under their respective licences.
 
 > Status: development build. Do not use on production systems until a release is explicitly marked stable.
+
+The live session uses the display name **TechRefreshing Live User**, username
+`trlinux`, and hostname `tr-linux`. The desktop supplies a TR-branded first-run
+control centre, a slim top bar, and a centred floating application dock.

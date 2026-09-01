@@ -68,7 +68,7 @@ lb config noauto \
   --apt-recommends true \
   --memtest none \
   --image-name "$IMAGE_BASE" \
-  --bootappend-live "boot=live components quiet splash username=live hostname=tr-linux" \
+  --bootappend-live "boot=live components quiet splash username=trlinux hostname=tr-linux" \
   --iso-application "TechRefreshing Linux 1.0" \
   --iso-preparer "TechRefreshing" \
   --iso-publisher "TechRefreshing; https://techrefreshing.com/" \

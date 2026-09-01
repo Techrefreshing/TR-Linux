@@ -71,12 +71,16 @@ jobs:
               grep -Fxq "NAME=\"TechRefreshing Linux\"" /tmp/trroot/usr/lib/os-release
               grep -Fxq "ID=trlinux" /tmp/trroot/usr/lib/os-release
               grep -Fxq "tr-linux" /tmp/trroot/etc/hostname
+              grep -Fxq "LIVE_USERNAME=\"trlinux\"" /tmp/trroot/etc/live/config.conf.d/10-tr-linux.conf
+              grep -Fxq "LIVE_USER_FULLNAME=\"TechRefreshing Live User\"" /tmp/trroot/etc/live/config.conf.d/10-tr-linux.conf
 
               # Required TR Linux branding must be baked into the live filesystem.
               test -s /tmp/trroot/usr/share/tr-linux/branding/tr-monogram.png
               test -s /tmp/trroot/usr/share/tr-linux/branding/wallpaper-3840x2160.png
               test -s /tmp/trroot/usr/share/tr-linux/branding/sddm-background.png
               test -s /tmp/trroot/usr/share/tr-linux/branding/plymouth-logo.png
+              test -L /tmp/trroot/usr/share/icons/hicolor/256x256/apps/distributor-logo.png
+              test "$(readlink /tmp/trroot/usr/share/icons/hicolor/256x256/apps/distributor-logo.png)" = "tr-linux.png"
 
               # Legal, source, release and support documentation must ship.
               test -s /tmp/trroot/usr/share/doc/tr-linux/LICENSE
@@ -92,10 +96,17 @@ jobs:
               test -x /tmp/trroot/usr/local/bin/tr-linux-session-setup
               test -f /tmp/trroot/usr/share/applications/about-tr-linux.desktop
               test -f /tmp/trroot/usr/share/applications/tr-linux-welcome.desktop
+              grep -Fq "Update & Maintain" /tmp/trroot/usr/local/bin/tr-linux-welcome
+              grep -Fq "Open Discover" /tmp/trroot/usr/local/bin/tr-linux-welcome
+              grep -Fq "Setup & Personalise" /tmp/trroot/usr/local/bin/tr-linux-welcome
+              test ! -e /tmp/trroot/etc/xdg/autostart/org.kde.plasma-welcome.desktop
+              test ! -e /tmp/trroot/usr/share/applications/org.kde.plasma-welcome.desktop
               test -s /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "writeConfig(\"icon\", \"tr-linux\")" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "location = \"top\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "location = \"bottom\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "floating = true" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "lengthMode = \"fit\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
 
               # Only the TR Linux installer entry point should be exposed.
               test -x /tmp/trroot/usr/local/bin/calamares-install-tr-linux
@@ -131,7 +142,9 @@ jobs:
                 "- Boot menu contains TechRefreshing Linux" \
                 "- Legal, privacy, source and support documents present" \
                 "- Welcome/About application present" \
-                "- Two-panel TR Plasma layout present" \
+                "- KDE Welcome disabled; TR control centre present" \
+                "- TR live user identity present" \
+                "- Centred floating dock and top panel present" \
                 > /work/validation-report.txt
             '
 

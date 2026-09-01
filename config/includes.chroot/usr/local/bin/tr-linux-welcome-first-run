@@ -9,7 +9,8 @@ case "${HOME:-}" in
 esac
 
 marker="$HOME/.config/tr-linux-welcome-seen"
-[ -e "$marker" ] && exit 0
+autostart="$HOME/.config/tr-linux-welcome-autostart"
+[ -e "$marker" ] && [ ! -e "$autostart" ] && exit 0
 mkdir -p "$HOME/.config"
 touch "$marker"
 

@@ -4,14 +4,15 @@
 import argparse
 import html
 import os
+import subprocess
 import sys
 
 from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QDesktopServices, QIcon, QPixmap
 from PyQt6.QtWidgets import (
-    QApplication, QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
-    QMainWindow, QPushButton, QStackedWidget, QTextBrowser, QVBoxLayout,
-    QWidget
+    QApplication, QCheckBox, QFrame, QGridLayout, QHBoxLayout, QLabel,
+    QListWidget, QListWidgetItem, QMainWindow, QMessageBox, QPushButton,
+    QStackedWidget, QTextBrowser, QVBoxLayout, QWidget
 )
 
 DOC_ROOT = "/usr/share/doc/tr-linux"
@@ -21,6 +22,8 @@ NAVY = "#071226"
 PANEL = "#0E1B2B"
 TEXT = "#F5F7FA"
 MUTED = "#AFC5DD"
+WELCOME_MARKER = os.path.expanduser("~/.config/tr-linux-welcome-seen")
+AUTOSTART_MARKER = os.path.expanduser("~/.config/tr-linux-welcome-autostart")
 
 
 def open_url(url):
@@ -32,6 +35,51 @@ def button(label, url):
     control.setCursor(Qt.CursorShape.PointingHandCursor)
     control.clicked.connect(lambda: open_url(url))
     return control
+
+
+def launch(label, program, arguments=None, explanation=None):
+    """Create a button for one audited, predefined local command."""
+    control = QPushButton(label)
+    control.setCursor(Qt.CursorShape.PointingHandCursor)
+
+    def run():
+        if explanation:
+            answer = QMessageBox.question(
+                control, label, explanation + "\n\nContinue?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            if answer != QMessageBox.StandardButton.Yes:
+                return
+        try:
+            subprocess.Popen([program] + (arguments or []), start_new_session=True)
+        except OSError as error:
+            QMessageBox.critical(control, label, f"Unable to start {program}: {error}")
+
+    control.clicked.connect(run)
+    return control
+
+
+def command_button(label, command, explanation=None):
+    return launch(label, "konsole", ["-e", "bash", "-lc", command], explanation)
+
+
+def section(title, subtitle, actions):
+    card = QFrame()
+    card.setObjectName("ActionCard")
+    layout = QVBoxLayout(card)
+    name = QLabel(title)
+    name.setObjectName("CardTitle")
+    layout.addWidget(name)
+    detail = QLabel(subtitle)
+    detail.setObjectName("CardText")
+    detail.setWordWrap(True)
+    layout.addWidget(detail)
+    row = QHBoxLayout()
+    for action in actions:
+        row.addWidget(action)
+    row.addStretch()
+    layout.addLayout(row)
+    return card
 
 
 def heading(title, subtitle=""):
@@ -143,6 +191,91 @@ class GettingStartedPage(QWidget):
         layout.addStretch()
 
 
+class SystemPage(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(30, 24, 30, 24)
+        layout.setSpacing(12)
+        layout.addLayout(heading("Update and maintain", "APT, Flatpak and firmware tools"))
+        layout.addWidget(section(
+            "System updates",
+            "Refresh package information and install available Debian/TR Linux updates in a terminal.",
+            [command_button(
+                "Check for updates", "sudo apt update; apt list --upgradable; exec bash",
+                "This refreshes APT package information. It does not install packages."
+            ), command_button(
+                "Install updates", "sudo apt update && sudo apt full-upgrade; exec bash",
+                "This can install, upgrade, or remove packages to bring the system fully up to date."
+            )]
+        ))
+        layout.addWidget(section(
+            "Flatpak and firmware",
+            "Update sandboxed applications or check supported device firmware.",
+            [command_button("Update Flatpaks", "flatpak update; exec bash"),
+             launch("Firmware updates", "plasma-discover", ["--mode", "Update"])]
+        ))
+        layout.addWidget(section(
+            "Maintenance",
+            "Review disk use or clean downloaded APT package files.",
+            [launch("Disk usage", "filelight"), command_button(
+                "Clean APT cache", "sudo apt clean; echo 'APT cache cleaned.'; exec bash",
+                "This deletes downloaded APT package files. Installed software is not removed."
+            )]
+        ))
+        layout.addStretch()
+
+
+class SoftwarePage(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(30, 24, 30, 24)
+        layout.setSpacing(12)
+        layout.addLayout(heading("Software", "Discover applications and manage installed software"))
+        layout.addWidget(section(
+            "Software Centre", "Browse graphical applications, Flatpaks and available updates.",
+            [launch("Open Discover", "plasma-discover"),
+             launch("Manage Flatpak", "plasma-discover", ["--category", "flatpak"])]
+        ))
+        layout.addWidget(section(
+            "Package tools", "Use the graphical package manager or search APT in a terminal.",
+            [launch("Open Synaptic", "synaptic-pkexec"),
+             command_button("Search APT", "echo 'Example: apt search firefox'; exec bash")]
+        ))
+        if os.path.isdir("/run/live/medium") or os.path.isdir("/lib/live/mount/medium"):
+            layout.addWidget(section(
+                "Install TechRefreshing Linux",
+                "Copy the live system to this computer using the Calamares installer.",
+                [launch("Start installer", "/usr/local/bin/calamares-install-tr-linux")]
+            ))
+        layout.addStretch()
+
+
+class SetupPage(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(30, 24, 30, 24)
+        layout.setSpacing(12)
+        layout.addLayout(heading("Setup and personalise", "Useful KDE Plasma configuration pages"))
+        grid = QGridLayout()
+        actions = [
+            ("System Settings", "systemsettings", []),
+            ("Network", "systemsettings", ["kcm_networkmanagement"]),
+            ("Bluetooth", "systemsettings", ["kcm_bluetooth"]),
+            ("Display", "systemsettings", ["kcm_kscreen"]),
+            ("Appearance", "systemsettings", ["kcm_lookandfeel"]),
+            ("Users", "systemsettings", ["kcm_users"]),
+            ("System Information", "kinfocenter", []),
+            ("Firewall", "systemsettings", ["kcm_firewall"]),
+        ]
+        for index, (label, program, arguments) in enumerate(actions):
+            grid.addWidget(launch(label, program, arguments), index // 2, index % 2)
+        layout.addLayout(grid)
+        layout.addStretch()
+
+
 class DocumentPage(QWidget):
     FILES = [
         ("Release notes", "RELEASE-NOTES.md"),
@@ -198,7 +331,10 @@ class DocumentPage(QWidget):
 
 
 class MainWindow(QMainWindow):
-    PAGE_NAMES = ["Welcome", "About", "Get Started", "Support & Legal"]
+    PAGE_NAMES = [
+        "Welcome", "Update & Maintain", "Software", "Setup & Personalise",
+        "About", "Get Started", "Support & Legal"
+    ]
 
     def __init__(self, requested_page):
         super().__init__()
@@ -226,27 +362,47 @@ class MainWindow(QMainWindow):
         creator = QLabel("Created by\nAnup Kumar Yadav")
         creator.setObjectName("Creator")
         side.addWidget(creator)
+        self.startup = QCheckBox("Show at startup")
+        self.startup.setChecked(os.path.exists(AUTOSTART_MARKER))
+        self.startup.toggled.connect(self.set_startup)
+        side.addWidget(self.startup)
         sidebar.setFixedWidth(220)
         outer.addWidget(sidebar)
 
         self.stack = QStackedWidget()
         self.stack.addWidget(WelcomePage())
+        self.stack.addWidget(SystemPage())
+        self.stack.addWidget(SoftwarePage())
+        self.stack.addWidget(SetupPage())
         self.stack.addWidget(AboutPage())
         self.stack.addWidget(GettingStartedPage())
         self.stack.addWidget(DocumentPage())
         outer.addWidget(self.stack, 1)
         self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
 
-        index = {"welcome": 0, "about": 1, "start": 2, "legal": 3}.get(
+        index = {"welcome": 0, "system": 1, "software": 2, "setup": 3,
+                 "about": 4, "start": 5, "legal": 6}.get(
             requested_page, 0
         )
         self.nav.setCurrentRow(index)
         self.setCentralWidget(root)
 
+    def set_startup(self, enabled):
+        os.makedirs(os.path.dirname(WELCOME_MARKER), exist_ok=True)
+        try:
+            if enabled:
+                with open(AUTOSTART_MARKER, "a", encoding="utf-8"):
+                    pass
+            elif os.path.exists(AUTOSTART_MARKER):
+                os.unlink(AUTOSTART_MARKER)
+        except OSError as error:
+            QMessageBox.warning(self, "Startup preference", str(error))
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--page", choices=["welcome", "about", "start", "legal"],
+    parser.add_argument("--page", choices=["welcome", "system", "software", "setup",
+                                            "about", "start", "legal"],
                         default="welcome")
     args = parser.parse_args()
     app = QApplication(sys.argv)
@@ -272,6 +428,12 @@ def main():
             background: #0B2138; border: 1px solid #1B4E79; border-radius: 18px;
         }}
         #Hero {{ font-size: 38px; font-weight: 750; }}
+        #ActionCard {{
+            background: #0B1726; border: 1px solid #193A58;
+            border-radius: 12px; padding: 8px;
+        }}
+        #CardTitle {{ font-size: 18px; font-weight: 700; color: {BLUE}; }}
+        #CardText {{ color: {MUTED}; font-size: 13px; }}
         #PageTitle {{ font-size: 28px; font-weight: 700; }}
         #Subtitle {{ color: {MUTED}; font-size: 16px; }}
         QPushButton {{

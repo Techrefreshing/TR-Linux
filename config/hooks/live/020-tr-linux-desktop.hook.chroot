@@ -39,7 +39,7 @@ chmod 0755 /usr/local/bin/calamares-install-tr-linux
 # by Calamares.
 install -d -m 0750 /etc/sudoers.d
 cat > /etc/sudoers.d/tr-linux-live-installer <<'SUDOERS'
-live ALL=(root) NOPASSWD: /usr/bin/calamares
+trlinux ALL=(root) NOPASSWD: /usr/bin/calamares
 SUDOERS
 chmod 0440 /etc/sudoers.d/tr-linux-live-installer
 
@@ -89,7 +89,7 @@ fi
 install -d /etc/sddm.conf.d
 cat > /etc/sddm.conf.d/10-tr-linux.conf <<'SDDM'
 [Autologin]
-User=live
+User=trlinux
 Session=plasma
 Relogin=true
 
@@ -109,3 +109,23 @@ NM
 systemctl enable NetworkManager.service || true
 systemctl enable sddm.service || true
 systemctl enable fwupd.service || true
+
+# TR Linux provides its own first-run centre. Suppress KDE's separate Welcome
+# Centre without removing shared Plasma libraries.
+rm -f /etc/xdg/autostart/org.kde.plasma-welcome.desktop
+rm -f /usr/share/applications/org.kde.plasma-welcome.desktop
+rm -f /usr/share/applications/plasma-welcome.desktop
+
+# KDE and other desktop components request these standard distributor icon
+# names. Point only the system-branding aliases to TR artwork; Debian package
+# metadata and the required Debian attribution remain untouched.
+for size in 64 128 256 512; do
+    icon_dir="/usr/share/icons/hicolor/${size}x${size}/apps"
+    install -d "$icon_dir"
+    cp /usr/share/tr-linux/branding/tr-monogram.png "$icon_dir/tr-linux.png"
+    ln -sf tr-linux.png "$icon_dir/distributor-logo.png"
+    ln -sf tr-linux.png "$icon_dir/system-logo.png"
+    ln -sf tr-linux.png "$icon_dir/start-here.png"
+done
+
+gtk-update-icon-cache -f /usr/share/icons/hicolor >/dev/null 2>&1 || true

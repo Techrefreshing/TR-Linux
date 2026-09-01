@@ -9,6 +9,10 @@ This document covers TechRefreshing Linux 1.0. Check GitHub for newer reports.
   boot chain. Test the target hardware before changing existing installations.
 - The live session is not persistent unless the USB was separately configured
   for persistence.
+- Updates performed in the live session are temporary and disappear after
+  reboot unless persistence is configured. Install before routine updating.
+- Dock dimensions can vary slightly with display scaling and translated widget
+  labels; the layout constrains it to a centred fit-content range.
 - The installer may reject passwords that fail its dictionary or strength
   checks.
 - Very small displays may require resizing or maximising the installer.

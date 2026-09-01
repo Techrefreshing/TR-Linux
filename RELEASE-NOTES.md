@@ -8,7 +8,12 @@ beginner-friendly desktop intended for everyday PCs.
 
 ## Highlights
 
-- KDE Plasma 6 with a TechRefreshing two-panel desktop layout
+- KDE Plasma 6 with a top system bar and centred floating application dock
+- TechRefreshing Control Centre for updates, software, setup, personalisation,
+  maintenance, support, legal information, and system details
+- TR-branded first-run experience in place of KDE Welcome
+- TechRefreshing Live User (`trlinux`) live-session identity
+- TR distributor logo and TechRefreshing Linux 1.0 system identity
 - Wayland session with X11 components available for compatibility
 - Calamares graphical installer
 - APT and Flatpak with Flathub configured
