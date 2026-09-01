@@ -120,7 +120,7 @@ jobs:
               test -x /tmp/trroot/usr/local/bin/tr-linux-diagnostics
               test -x /tmp/trroot/usr/local/bin/tr-linux-hardware-check
               test -x /tmp/trroot/usr/local/bin/tr-linux-reset-desktop
-              test -f /tmp/trroot/etc/systemd/system/multi-user.target.wants/tr-linux-first-boot.service
+              test -L /tmp/trroot/etc/systemd/system/multi-user.target.wants/tr-linux-first-boot.service
               grep -Fq "shellprocess@tridentity" /tmp/trroot/etc/calamares/settings.conf
               test -s /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
               grep -Fq "tr-linux-finalize-target" /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
