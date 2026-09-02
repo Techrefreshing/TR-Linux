@@ -14,6 +14,10 @@ beginner-friendly desktop intended for everyday PCs.
   Discover and TR Welcome launchers.
 - Added a pre-display identity service so KDE System Information consistently
   reports TechRefreshing Linux 1.0 and uses the TR distributor logo.
+- Added KInfoCenter's distributor override so Debian's separate version/logo
+  defaults cannot replace the TR 1.0 identity on the About This System page.
+- Restored Debian's tested Calamares module sequence and delegated final
+  installed-system cleanup to the existing first-boot service.
 - Refined the floating top panel with an ISO date beside the clock.
 - Reduced the normal and record-failure GRUB menu delay from five to three
   seconds without disabling hardware or network initialization services.

@@ -75,24 +75,12 @@ if [ -f /etc/calamares/settings.conf ]; then
         printf '\nbranding: trlinux\n' >> /etc/calamares/settings.conf
     fi
 
-    # Apply branding inside the target after the bootloader module has written
-    # its files but before Calamares unmounts the installation.
-    if ! grep -q 'shellprocess@tridentity' /etc/calamares/settings.conf; then
-        sed -i '/^[[:space:]]*- umount[[:space:]]*$/i\      - shellprocess@tridentity' /etc/calamares/settings.conf
-    fi
 fi
 
-cat > /etc/calamares/modules/shellprocess-tridentity.conf <<'IDENTITY'
----
-dontChroot: false
-timeout: 180
-verbose: true
-script:
-  - command: "/usr/local/sbin/tr-linux-finalize-target '${USER}'"
-    timeout: 180
-i18n:
-  name: "Applying TechRefreshing identity"
-IDENTITY
+# Installed-system identity is finalized by tr-linux-first-boot.service. Do not
+# add a custom Calamares sequence item: Debian's packaged sequence includes
+# custom modules such as sources-final and its module ordering must stay intact.
+rm -f /etc/calamares/modules/shellprocess-tridentity.conf
 
 cat > /etc/calamares/modules/welcome.conf <<'WELCOME'
 ---

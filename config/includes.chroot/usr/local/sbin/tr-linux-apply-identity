@@ -28,5 +28,17 @@ DISTRIB_RELEASE=1.0
 DISTRIB_CODENAME=trixie
 DISTRIB_DESCRIPTION="TechRefreshing Linux 1.0"
 LSBRELEASE
+
+# KInfoCenter supports a distributor override here. Debian's packaged file
+# otherwise supplies its major version and logo independently of os-release.
+install -d /etc/xdg
+cat > /etc/xdg/kcm-about-distrorc <<'KINFOCENTER'
+[General]
+LogoPath=/usr/share/tr-linux/branding/tr-monogram.png
+Website=https://techrefreshing.com/
+Version=1.0
+UseOSReleaseVersion=false
+KINFOCENTER
+
 printf '%s\n' 'TechRefreshing Linux 1.0 \n \l' > /etc/issue
 printf '%s\n' 'TechRefreshing Linux 1.0' > /etc/issue.net

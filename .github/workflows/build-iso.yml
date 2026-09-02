@@ -125,12 +125,14 @@ jobs:
               test -L /tmp/trroot/etc/systemd/system/multi-user.target.wants/tr-linux-identity.service
               grep -Fq "VERSION_ID=\"1.0\"" /tmp/trroot/usr/local/sbin/tr-linux-apply-identity
               grep -Fq "LOGO=tr-linux" /tmp/trroot/usr/local/sbin/tr-linux-apply-identity
-              grep -Fq "shellprocess@tridentity" /tmp/trroot/etc/calamares/settings.conf
-              test -s /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
-              grep -Fq "tr-linux-finalize-target" /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
+              test -s /tmp/trroot/usr/lib/calamares/modules/sources-final/module.desc
+              ! grep -Fq "shellprocess@tridentity" /tmp/trroot/etc/calamares/settings.conf
+              test ! -e /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
               grep -Fq "AccountsService/icons" /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
               grep -Fq "GRUB_DISTRIBUTOR=\"TechRefreshing Linux\"" /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
               grep -Fq "tr-linux-welcome.desktop" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fxq "Version=1.0" /tmp/trroot/etc/xdg/kcm-about-distrorc
+              grep -Fxq "LogoPath=/usr/share/tr-linux/branding/tr-monogram.png" /tmp/trroot/etc/xdg/kcm-about-distrorc
 
               # Graphical installed GRUB and animated Plymouth themes.
               test -s /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
