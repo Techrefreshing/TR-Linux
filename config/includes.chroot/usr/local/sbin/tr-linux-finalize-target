@@ -87,8 +87,16 @@ fi
 if command -v plymouth-set-default-theme >/dev/null 2>&1; then
     plymouth-set-default-theme tr-linux || true
 fi
-update-initramfs -u -k all || true
-update-grub || true
+
+# The ISO build already installs the Plymouth assets into every initramfs, and
+# Calamares creates grub.cfg after copying the TR configuration. Avoid repeating
+# those expensive operations on the first installed boot. Regenerate GRUB only
+# as a recovery fallback if the installed configuration does not reference the
+# TR theme.
+if [ ! -s /boot/grub/grub.cfg ] ||
+   ! grep -Fq "/boot/grub/themes/tr-linux/theme.txt" /boot/grub/grub.cfg; then
+    update-grub || true
+fi
 
 install -d /var/lib/tr-linux
 touch /var/lib/tr-linux/identity-v2

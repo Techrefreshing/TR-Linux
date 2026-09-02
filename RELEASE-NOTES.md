@@ -23,6 +23,10 @@ beginner-friendly desktop intended for everyday PCs.
   prompt. Normal security and power defaults return on the installed system.
 - Added a rotating six-page Calamares slideshow introducing the desktop,
   included applications, software management, privacy, recovery and support.
+- Removed an invalid GRUB terminal-box pixmap pattern that paused every
+  installed boot with a missing-asterisk error.
+- Removed the redundant first-boot initramfs rebuild and made GRUB regeneration
+  conditional, reducing the delay before the first installed desktop appears.
 - Refined the floating top panel with an ISO date beside the clock.
 - Reduced the normal and record-failure GRUB menu delay from five to three
   seconds without disabling hardware or network initialization services.

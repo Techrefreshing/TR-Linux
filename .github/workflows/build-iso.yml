@@ -145,6 +145,10 @@ jobs:
               test -s /tmp/trroot/boot/grub/themes/tr-linux/background.png
               test -s /tmp/trroot/etc/default/grub.d/99-tr-linux.cfg
               grep -Fq "TechRefreshing Linux" /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
+              ! grep -Fq "terminal-box: \"0 0 0 0\"" /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
+              grep -Fq "selected_item_pixmap_style = \"select_*.png\"" /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
+              ! grep -Eq "^update-initramfs[[:space:]]" /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
+              grep -Fq "Regenerate GRUB only" /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
               test -s /tmp/trroot/usr/share/plymouth/themes/tr-linux/tr-linux.script
               grep -Fq "SetRefreshFunction" /tmp/trroot/usr/share/plymouth/themes/tr-linux/tr-linux.script
               grep -Fq "SetDisplayPasswordFunction" /tmp/trroot/usr/share/plymouth/themes/tr-linux/tr-linux.script

@@ -16,7 +16,6 @@ desktop-image: "background.png"
 desktop-color: "#071226"
 message-color: "#f5f7fa"
 message-bg-color: "#0e1b2b"
-terminal-box: "0 0 0 0"
 terminal-font: "DejaVu Sans Mono 14"
 
 + image {

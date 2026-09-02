@@ -21,6 +21,9 @@ This document covers TechRefreshing Linux 1.0. Check GitHub for newer reports.
 - Displays below 1024x600 may still require maximising the installer.
 - The graphical GRUB and Plymouth experience depends on firmware graphics
   support. Unsupported modes fall back to GRUB/Plymouth text output.
+- The first boot can still be slower than later boots while system services
+  create caches and initialize the new user, especially on hard disks and
+  low-resource virtual machines.
 - Boot duration depends on firmware, storage speed, graphics drivers and
   virtual-machine resources. TR Linux shortens the boot-menu delay but does not
   disable compatibility services merely to improve benchmark times.
