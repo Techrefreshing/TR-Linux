@@ -110,10 +110,10 @@ jobs:
               grep -Fq "floating = true" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "lengthMode = \"fit\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fq "org.kde.plasma.lock_logout" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
-              grep -Fq 'addApplicationLauncher("org.kde.dolphin.desktop"' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
-              grep -Fq 'addApplicationLauncher("firefox-esr.desktop"' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
-              grep -Fq 'addApplicationLauncher("org.kde.discover.desktop"' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
-              grep -Fq 'addApplicationLauncher("tr-linux-welcome.desktop"' /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "addApplicationLauncher(\"org.kde.dolphin.desktop\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "addApplicationLauncher(\"firefox-esr.desktop\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "addApplicationLauncher(\"org.kde.discover.desktop\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
+              grep -Fq "addApplicationLauncher(\"tr-linux-welcome.desktop\"" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
 
               # Installed-system finalization, recovery, diagnostics and layout profiles.
               test -x /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
@@ -123,8 +123,8 @@ jobs:
               test -x /tmp/trroot/usr/local/bin/tr-linux-reset-desktop
               test -L /tmp/trroot/etc/systemd/system/multi-user.target.wants/tr-linux-first-boot.service
               test -L /tmp/trroot/etc/systemd/system/multi-user.target.wants/tr-linux-identity.service
-              grep -Fq 'VERSION_ID="1.0"' /tmp/trroot/usr/local/sbin/tr-linux-apply-identity
-              grep -Fq 'LOGO=tr-linux' /tmp/trroot/usr/local/sbin/tr-linux-apply-identity
+              grep -Fq "VERSION_ID=\"1.0\"" /tmp/trroot/usr/local/sbin/tr-linux-apply-identity
+              grep -Fq "LOGO=tr-linux" /tmp/trroot/usr/local/sbin/tr-linux-apply-identity
               grep -Fq "shellprocess@tridentity" /tmp/trroot/etc/calamares/settings.conf
               test -s /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
               grep -Fq "tr-linux-finalize-target" /tmp/trroot/etc/calamares/modules/shellprocess-tridentity.conf
