@@ -111,6 +111,43 @@ systemctl enable sddm.service || true
 systemctl enable fwupd.service || true
 systemctl enable tr-linux-first-boot.service || true
 
+# A live installation can take a while on USB media and older disks. Prevent
+# Plasma from locking or suspending the temporary live account while Calamares
+# is running. The target finalizer removes these system-wide live defaults
+# before the first installed graphical login.
+cat > /etc/xdg/kscreenlockerrc <<'KSCREENLOCKER'
+[Daemon]
+Autolock=false
+LockOnResume=false
+Timeout=0
+KSCREENLOCKER
+
+cat > /etc/xdg/powermanagementprofilesrc <<'POWERDEVIL'
+[AC][DPMSControl]
+idleTime=0
+lockBeforeTurnOff=0
+
+[AC][SuspendSession]
+idleTime=0
+suspendType=0
+
+[Battery][DPMSControl]
+idleTime=0
+lockBeforeTurnOff=0
+
+[Battery][SuspendSession]
+idleTime=0
+suspendType=0
+
+[LowBattery][DPMSControl]
+idleTime=0
+lockBeforeTurnOff=0
+
+[LowBattery][SuspendSession]
+idleTime=0
+suspendType=0
+POWERDEVIL
+
 # TR Linux provides its own first-run centre. Suppress KDE's separate Welcome
 # Centre without removing shared Plasma libraries.
 rm -f /etc/xdg/autostart/org.kde.plasma-welcome.desktop

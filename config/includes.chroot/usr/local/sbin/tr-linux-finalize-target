@@ -60,6 +60,9 @@ rm -f /usr/local/bin/calamares-install-tr-linux
 rm -f /etc/sudoers.d/tr-linux-live-installer
 find /home -path '*/Desktop/install-tr-linux.desktop' -type f -delete 2>/dev/null || true
 
+# Restore normal Plasma security and power defaults on installed systems.
+rm -f /etc/xdg/kscreenlockerrc /etc/xdg/powermanagementprofilesrc
+
 # Force the installed GRUB identity and theme. This runs after Calamares'
 # bootloader job, so the first installed boot is branded too.
 install -d /etc/default/grub.d

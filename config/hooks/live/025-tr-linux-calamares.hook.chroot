@@ -56,14 +56,125 @@ cat > "$BRAND/show.qml" <<'QML'
 import QtQuick 2.15
 
 Rectangle {
+    id: root
     width: 800
     height: 450
     color: "#0E1B2B"
-    Image {
+
+    property int slide: 0
+    property var titles: [
+        "Welcome to TechRefreshing Linux",
+        "A familiar desktop, thoughtfully refined",
+        "Ready for everyday work",
+        "Software your way",
+        "Private by default",
+        "Help is always close"
+    ]
+    property var descriptions: [
+        "A stable Debian foundation with a polished KDE Plasma desktop, created for beginners and experienced Linux users alike.",
+        "Use the top system bar and centred floating dock to reach files, Firefox, Discover and TR Welcome without hunting through menus.",
+        "Firefox ESR, LibreOffice, VLC, Thunderbird, GIMP and useful KDE applications are ready when installation finishes.",
+        "Install trusted packages with APT or browse graphical applications in Discover. Flatpak and Flathub support are included.",
+        "TechRefreshing Linux adds no mandatory telemetry. Privacy controls, legal notices and source-code information are available from TR Welcome.",
+        "Open TR Welcome for updates, hardware checks, desktop profiles, recovery tools, documentation and support links."
+    ]
+    property var labels: [
+        "Stable • Familiar • Beautiful",
+        "Top bar • Floating dock • Plasma 6",
+        "Web • Office • Media • Graphics",
+        "APT • Discover • Flatpak",
+        "No mandatory TR telemetry",
+        "Diagnostics • Recovery • Support"
+    ]
+
+    Timer {
+        interval: 7500
+        running: true
+        repeat: true
+        onTriggered: root.slide = (root.slide + 1) % root.titles.length
+    }
+
+    Rectangle {
         anchors.fill: parent
-        source: "slide1.png"
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#081525" }
+            GradientStop { position: 1.0; color: "#123D73" }
+        }
+    }
+
+    Image {
+        id: logo
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 34
+        width: 112
+        height: 112
+        source: "tr-monogram.png"
         fillMode: Image.PreserveAspectFit
         smooth: true
+    }
+
+    Text {
+        anchors.top: logo.bottom
+        anchors.topMargin: 18
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width - 100
+        horizontalAlignment: Text.AlignHCenter
+        text: root.titles[root.slide]
+        color: "#FFFFFF"
+        font.pixelSize: 30
+        font.bold: true
+        wrapMode: Text.WordWrap
+    }
+
+    Text {
+        anchors.centerIn: parent
+        anchors.verticalCenterOffset: 54
+        width: parent.width - 150
+        horizontalAlignment: Text.AlignHCenter
+        text: root.descriptions[root.slide]
+        color: "#DCEBFA"
+        font.pixelSize: 18
+        lineHeight: 1.25
+        wrapMode: Text.WordWrap
+    }
+
+    Rectangle {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: indicators.top
+        anchors.bottomMargin: 22
+        width: featureLabel.implicitWidth + 34
+        height: 38
+        radius: 19
+        color: "#17385D"
+        border.color: "#42A5F5"
+        border.width: 1
+        Text {
+            id: featureLabel
+            anchors.centerIn: parent
+            text: root.labels[root.slide]
+            color: "#6CC4FF"
+            font.pixelSize: 15
+            font.bold: true
+        }
+    }
+
+    Row {
+        id: indicators
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 24
+        spacing: 10
+        Repeater {
+            model: root.titles.length
+            Rectangle {
+                width: index === root.slide ? 24 : 9
+                height: 9
+                radius: 5
+                color: index === root.slide ? "#42A5F5" : "#45627F"
+                Behavior on width { NumberAnimation { duration: 180 } }
+            }
+        }
     }
 }
 QML

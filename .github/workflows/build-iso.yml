@@ -133,6 +133,12 @@ jobs:
               grep -Fq "tr-linux-welcome.desktop" /tmp/trroot/usr/share/tr-linux/plasma-layout.js
               grep -Fxq "Version=1.0" /tmp/trroot/etc/xdg/kcm-about-distrorc
               grep -Fxq "LogoPath=/usr/share/tr-linux/branding/tr-monogram.png" /tmp/trroot/etc/xdg/kcm-about-distrorc
+              grep -Fxq "Autolock=false" /tmp/trroot/etc/xdg/kscreenlockerrc
+              grep -Fq "systemd-inhibit" /tmp/trroot/usr/local/bin/tr-linux-session-setup
+              grep -Fq "Restore normal Plasma security" /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
+              grep -Fq "Ready for everyday work" /tmp/trroot/etc/calamares/branding/trlinux/show.qml
+              grep -Fq "No mandatory TR telemetry" /tmp/trroot/etc/calamares/branding/trlinux/show.qml
+              grep -Fq "interval: 7500" /tmp/trroot/etc/calamares/branding/trlinux/show.qml
 
               # Graphical installed GRUB and animated Plymouth themes.
               test -s /tmp/trroot/boot/grub/themes/tr-linux/theme.txt

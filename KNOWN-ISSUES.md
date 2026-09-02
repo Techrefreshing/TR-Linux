@@ -9,6 +9,9 @@ This document covers TechRefreshing Linux 1.0. Check GitHub for newer reports.
   boot chain. Test the target hardware before changing existing installations.
 - The live session is not persistent unless the USB was separately configured
   for persistence.
+- The Debian Live fallback credentials are username `trlinux` and password
+  `live`. Automatic login is enabled and the live session is configured not
+  to lock during installation.
 - Updates performed in the live session are temporary and disappear after
   reboot unless persistence is configured. Install before routine updating.
 - Dock dimensions can vary slightly with display scaling and translated widget

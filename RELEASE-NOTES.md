@@ -18,6 +18,11 @@ beginner-friendly desktop intended for everyday PCs.
   defaults cannot replace the TR 1.0 identity on the About This System page.
 - Restored Debian's tested Calamares module sequence and delegated final
   installed-system cleanup to the existing first-boot service.
+- Prevented screen locking, display power-off and sleep in the temporary live
+  session so long installations cannot be interrupted by an unusable lock
+  prompt. Normal security and power defaults return on the installed system.
+- Added a rotating six-page Calamares slideshow introducing the desktop,
+  included applications, software management, privacy, recovery and support.
 - Refined the floating top panel with an ISO date beside the clock.
 - Reduced the normal and record-failure GRUB menu delay from five to three
   seconds without disabling hardware or network initialization services.

@@ -15,6 +15,25 @@ if [ -d /run/live/medium ] || [ -d /lib/live/mount/medium ] ||
     mkdir -p "$HOME/Desktop"
     cp /usr/share/applications/install-tr-linux.desktop "$HOME/Desktop/install-tr-linux.desktop"
     chmod 0755 "$HOME/Desktop/install-tr-linux.desktop"
+
+    # Reinforce the system-wide live defaults in the user's KConfig layer.
+    mkdir -p "$HOME/.config"
+    cat > "$HOME/.config/kscreenlockerrc" <<'KSCREENLOCKER'
+[Daemon]
+Autolock=false
+LockOnResume=false
+Timeout=0
+KSCREENLOCKER
+
+    # Block system idle/sleep for the lifetime of this disposable live session.
+    if command -v systemd-inhibit >/dev/null 2>&1 &&
+       ! pgrep -f "TR Linux live installation session" >/dev/null 2>&1; then
+        nohup systemd-inhibit --what=idle:sleep --mode=block \
+            --who="TechRefreshing Linux" \
+            --why="TR Linux live installation session" \
+            sleep infinity >/dev/null 2>&1 &
+    fi
+    xset s off -dpms >/dev/null 2>&1 || true
 fi
 
 marker="$HOME/.config/tr-linux-layout-v3"
