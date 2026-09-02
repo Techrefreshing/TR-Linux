@@ -17,7 +17,7 @@ if [ -d /run/live/medium ] || [ -d /lib/live/mount/medium ] ||
     chmod 0755 "$HOME/Desktop/install-tr-linux.desktop"
 fi
 
-marker="$HOME/.config/tr-linux-layout-v2"
+marker="$HOME/.config/tr-linux-layout-v3"
 [ -e "$marker" ] && exit 0
 mkdir -p "$HOME/.config"
 

@@ -128,6 +128,10 @@ for size in 64 128 256 512; do
     ln -sf tr-linux.png "$icon_dir/system-logo.png"
     ln -sf tr-linux.png "$icon_dir/start-here.png"
 done
+install -d /usr/share/icons/hicolor/scalable/apps
+cp /usr/share/tr-linux/branding/logo.svg /usr/share/icons/hicolor/scalable/apps/tr-linux.svg
+ln -sf tr-linux.svg /usr/share/icons/hicolor/scalable/apps/distributor-logo.svg
+ln -sf tr-linux.svg /usr/share/icons/hicolor/scalable/apps/system-logo.svg
 
 gtk-update-icon-cache -f /usr/share/icons/hicolor >/dev/null 2>&1 || true
 

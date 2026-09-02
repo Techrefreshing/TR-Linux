@@ -3,23 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 set -eu
 
-cat > /usr/lib/os-release <<'OSRELEASE'
-PRETTY_NAME="TechRefreshing Linux 1.0"
-NAME="TechRefreshing Linux"
-VERSION_ID="1.0"
-VERSION="1.0 (Trixie)"
-VERSION_CODENAME=trixie
-ID=trlinux
-ID_LIKE=debian
-HOME_URL="https://techrefreshing.com/"
-SUPPORT_URL="https://techrefreshing.com/linux/"
-BUG_REPORT_URL="https://github.com/Techrefreshing/TR-Linux/issues"
-LOGO=tr-linux
-OSRELEASE
-
-ln -sf ../usr/lib/os-release /etc/os-release
-printf '%s\n' 'TechRefreshing Linux 1.0 \n \l' > /etc/issue
-printf '%s\n' 'TechRefreshing Linux 1.0' > /etc/issue.net
+/usr/local/sbin/tr-linux-apply-identity
+systemctl enable tr-linux-identity.service || true
 printf '%s\n' 'tr-linux' > /etc/hostname
 
 install -d /usr/share/pixmaps

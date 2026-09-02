@@ -10,22 +10,7 @@ if [ -d /run/live/medium ] || [ -d /lib/live/mount/medium ]; then
     exit 1
 fi
 
-cat > /usr/lib/os-release <<'OSRELEASE'
-PRETTY_NAME="TechRefreshing Linux 1.0"
-NAME="TechRefreshing Linux"
-VERSION_ID="1.0"
-VERSION="1.0 (Trixie)"
-VERSION_CODENAME=trixie
-ID=trlinux
-ID_LIKE=debian
-HOME_URL="https://techrefreshing.com/"
-SUPPORT_URL="https://techrefreshing.com/linux/"
-BUG_REPORT_URL="https://github.com/Techrefreshing/TR-Linux/issues"
-LOGO=tr-linux
-OSRELEASE
-ln -sf ../usr/lib/os-release /etc/os-release
-printf '%s\n' 'TechRefreshing Linux 1.0 \n \l' > /etc/issue
-printf '%s\n' 'TechRefreshing Linux 1.0' > /etc/issue.net
+/usr/local/sbin/tr-linux-apply-identity
 
 # Standard desktop identity names queried by KInfoCenter, AccountsService and
 # application menus. Debian package artwork and legal attribution are retained.
@@ -37,6 +22,10 @@ for size in 64 128 256 512; do
     ln -sf tr-linux.png "$icon_dir/system-logo.png"
     ln -sf tr-linux.png "$icon_dir/start-here.png"
 done
+install -d /usr/share/icons/hicolor/scalable/apps
+cp /usr/share/tr-linux/branding/logo.svg /usr/share/icons/hicolor/scalable/apps/tr-linux.svg
+ln -sf tr-linux.svg /usr/share/icons/hicolor/scalable/apps/distributor-logo.svg
+ln -sf tr-linux.svg /usr/share/icons/hicolor/scalable/apps/system-logo.svg
 install -d /usr/share/pixmaps
 cp /usr/share/tr-linux/branding/tr-monogram.png /usr/share/pixmaps/tr-linux.png
 gtk-update-icon-cache -f /usr/share/icons/hicolor >/dev/null 2>&1 || true
@@ -78,7 +67,8 @@ cat > /etc/default/grub.d/99-tr-linux.cfg <<'GRUBCFG'
 GRUB_DISTRIBUTOR="TechRefreshing Linux"
 GRUB_DEFAULT=0
 GRUB_TIMEOUT_STYLE=menu
-GRUB_TIMEOUT=5
+GRUB_TIMEOUT=3
+GRUB_RECORDFAIL_TIMEOUT=3
 GRUB_GFXMODE=auto
 GRUB_GFXPAYLOAD_LINUX=keep
 GRUB_THEME="/boot/grub/themes/tr-linux/theme.txt"

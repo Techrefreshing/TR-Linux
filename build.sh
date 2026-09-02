@@ -50,9 +50,10 @@ done
 rm -rf config/includes.chroot/usr/share/tr-linux/branding
 install -d config/includes.chroot/usr/share/tr-linux/branding
 cp -a branding/generated/. config/includes.chroot/usr/share/tr-linux/branding/
+install -m 0644 branding/logo.svg config/includes.chroot/usr/share/tr-linux/branding/logo.svg
 install -m 0644 branding/wallpaper.svg config/includes.chroot/usr/share/tr-linux/branding/wallpaper.svg
 
-chmod 0755 config/includes.chroot/usr/local/bin/tr-linux-welcome config/includes.chroot/usr/local/bin/tr-linux-welcome-first-run config/includes.chroot/usr/local/bin/tr-linux-session-setup config/includes.chroot/usr/local/sbin/tr-linux-finalize-target config/includes.chroot/usr/local/bin/tr-linux-diagnostics config/includes.chroot/usr/local/bin/tr-linux-hardware-check config/includes.chroot/usr/local/bin/tr-linux-reset-desktop
+chmod 0755 config/includes.chroot/usr/local/bin/tr-linux-welcome config/includes.chroot/usr/local/bin/tr-linux-welcome-first-run config/includes.chroot/usr/local/bin/tr-linux-session-setup config/includes.chroot/usr/local/sbin/tr-linux-apply-identity config/includes.chroot/usr/local/sbin/tr-linux-finalize-target config/includes.chroot/usr/local/bin/tr-linux-diagnostics config/includes.chroot/usr/local/bin/tr-linux-hardware-check config/includes.chroot/usr/local/bin/tr-linux-reset-desktop
 
 find config/hooks -type f \( -name '*.hook.chroot' -o -name '*.hook.binary' \) -exec chmod 0755 {} + 2>/dev/null || true
 

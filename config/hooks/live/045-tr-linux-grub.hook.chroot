@@ -62,7 +62,8 @@ cat > /etc/default/grub.d/99-tr-linux.cfg <<'GRUBCFG'
 GRUB_DISTRIBUTOR="TechRefreshing Linux"
 GRUB_DEFAULT=0
 GRUB_TIMEOUT_STYLE=menu
-GRUB_TIMEOUT=5
+GRUB_TIMEOUT=3
+GRUB_RECORDFAIL_TIMEOUT=3
 GRUB_GFXMODE=auto
 GRUB_GFXPAYLOAD_LINUX=keep
 GRUB_THEME="/boot/grub/themes/tr-linux/theme.txt"

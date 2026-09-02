@@ -6,6 +6,18 @@ TechRefreshing Linux 1.0 is the first amd64 desktop release from
 TechRefreshing. It combines Debian 13 Stable with KDE Plasma 6 and a
 beginner-friendly desktop intended for everyday PCs.
 
+## Final refresh
+
+- Corrected Plymouth geometry so the monogram, wordmark and animated progress
+  dots no longer overlap.
+- Replaced unreliable dock pin serialization with explicit Dolphin, Firefox,
+  Discover and TR Welcome launchers.
+- Added a pre-display identity service so KDE System Information consistently
+  reports TechRefreshing Linux 1.0 and uses the TR distributor logo.
+- Refined the floating top panel with an ISO date beside the clock.
+- Reduced the normal and record-failure GRUB menu delay from five to three
+  seconds without disabling hardware or network initialization services.
+
 ## Highlights
 
 - KDE Plasma 6 with a top system bar and centred floating application dock
