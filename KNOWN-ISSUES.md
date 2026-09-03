@@ -35,5 +35,14 @@ This document covers TechRefreshing Linux 1.0. Check GitHub for newer reports.
 - Dual-boot installation can be affected by Windows Fast Startup, BitLocker,
   existing RAID, or unusual partition layouts. Back up recovery keys and data.
 
+## Windows is not listed in the boot menu
+
+TR Linux enables `os-prober` during GRUB configuration. Windows may still be
+absent if it and TR Linux use different firmware modes (UEFI versus legacy
+BIOS), BitLocker or Fast Startup blocks safe probing, the Windows disk is
+disconnected, or its EFI System Partition is unavailable. Match the firmware
+mode used by Windows before installing TR Linux. After correcting the cause,
+run `sudo update-grub`.
+
 Report reproducible TR Linux-specific issues at:
 https://github.com/Techrefreshing/TR-Linux/issues

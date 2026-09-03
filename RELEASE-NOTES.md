@@ -8,6 +8,10 @@ beginner-friendly desktop intended for everyday PCs.
 
 ## Final refresh
 
+- Reworked the installed GRUB menu with a dedicated, uncluttered background;
+  removed the duplicated logo and fragile nine-slice selection artwork.
+- Enabled GRUB `os-prober` integration so visible Windows installations are
+  included in the installed boot menu.
 - Corrected Plymouth geometry so the monogram, wordmark and animated progress
   dots no longer overlap.
 - Replaced unreliable dock pin serialization with explicit Dolphin, Firefox,
