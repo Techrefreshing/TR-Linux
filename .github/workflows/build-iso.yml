@@ -147,7 +147,7 @@ jobs:
               grep -Fq "TechRefreshing Linux" /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
               ! grep -Fq "terminal-box: \"0 0 0 0\"" /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
               ! grep -Fq "selected_item_pixmap_style" /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
-              ! grep -Fq '+ image {' /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
+              ! grep -Fq "image {" /tmp/trroot/boot/grub/themes/tr-linux/theme.txt
               grep -Fxq "GRUB_DISABLE_OS_PROBER=false" /tmp/trroot/etc/default/grub.d/99-tr-linux.cfg
               chroot /tmp/trroot dpkg-query -s os-prober | grep -Fq "Status: install ok installed"
               grep -Fxq "GRUB_DISABLE_OS_PROBER=false" /tmp/trroot/usr/local/sbin/tr-linux-finalize-target
