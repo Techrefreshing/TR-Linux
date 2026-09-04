@@ -8,7 +8,7 @@ and complete TechRefreshing desktop and boot branding.
 
 Created by **Anup Kumar Yadav**.
 
-- Website: https://techrefreshing.com/
+- Website: https://techrefreshing.com/tr-linux/
 - Linux guides: https://linuxano.com/
 - Release notes: [RELEASE-NOTES.md](RELEASE-NOTES.md)
 - Known issues: [KNOWN-ISSUES.md](KNOWN-ISSUES.md)
